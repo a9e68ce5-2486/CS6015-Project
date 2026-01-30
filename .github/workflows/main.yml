@@ -18,7 +18,11 @@ jobs:
       run: sudo apt-get update && sudo apt-get install -y g++
 
     - name: Build project
-      run: make
+      run: |
+        cd msdscript
+        make
 
     - name: Run tests
-      run: ./msdscript
+      run: |
+        cd msdscript
+        ./msdscript
