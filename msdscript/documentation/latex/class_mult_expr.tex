@@ -1,0 +1,174 @@
+\doxysection{Mult\+Expr Class Reference}
+\hypertarget{class_mult_expr}{}\label{class_mult_expr}\index{MultExpr@{MultExpr}}
+
+
+Represents a multiplication operation (e.\+g., 3 \texorpdfstring{$\ast$}{*} 4).  
+
+
+
+
+{\ttfamily \+\#include $<$expr.\+h$>$}
+
+Inheritance diagram for Mult\+Expr:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_mult_expr}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_mult_expr_abd0b326f7b3f90caadecede9ddfa3856}{Mult\+Expr}} (\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{class_mult_expr_a0b49284e5c90d2f9e55df85c37ace717}{lhs}}, \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{class_mult_expr_ae70fd4159bdde5ae4beaade8510d9103}{rhs}})
+\begin{DoxyCompactList}\small\item\em Constructs a \doxylink{class_mult_expr}{Mult\+Expr}. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_mult_expr_a2083a2c51cca7261235b860f5f7e77b8}{equals}} (\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}e) override
+\begin{DoxyCompactList}\small\item\em Checks equality with another expression. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_mult_expr_aba807dfeefc21e3a4414949427e21a42}{interp}} () override
+\begin{DoxyCompactList}\small\item\em Returns the product of the left and right operands. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_mult_expr_a6ec2543c4976721e5dbf9f6ddbdc0c3c}{has\+\_\+variable}} () override
+\begin{DoxyCompactList}\small\item\em Returns true if either operand contains a variable. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{class_mult_expr_a3e0229a74dc3711cab444d99a9825d8e}{subst}} (std::\+string name, \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}replacement) override
+\begin{DoxyCompactList}\small\item\em Returns a new \doxylink{class_mult_expr}{Mult\+Expr} with substitutions applied to children. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_mult_expr_a297da1159397bb6d3d11dab5df13770a}{print\+Exp}} (std::\+ostream \&ot) override
+\begin{DoxyCompactList}\small\item\em Prints (lhs\texorpdfstring{$\ast$}{*}rhs) with parentheses. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_mult_expr_a0a3eb519b307e6ee0293ac57a6929cdc}{pretty\+\_\+print\+\_\+at}} (std::\+ostream \&ot, \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}} p\+\_\+prec) override
+\begin{DoxyCompactList}\small\item\em Prints the multiplication, handling precedence to minimize parentheses. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_expr}{Expr}}}
+\begin{DoxyCompactItemize}
+\item 
+std::\+string \doxymbox{\hyperlink{class_expr_abe130f37bd185ec13c5113de16fc7bf7}{to\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the strict format. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_expr_a747e1f67ac65a4dd86458a03c9caa282}{pretty\+\_\+print}} (std::\+ostream \&ot)
+\begin{DoxyCompactList}\small\item\em Prints the expression in a pretty format. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{class_expr_a6ad7c18234f22d96d6917089b5bd7caa}{to\+\_\+pretty\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the pretty format. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Expr} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor to ensure proper cleanup of derived classes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_mult_expr_a0b49284e5c90d2f9e55df85c37ace717}\label{class_mult_expr_a0b49284e5c90d2f9e55df85c37ace717} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} {\bfseries lhs}
+\begin{DoxyCompactList}\small\item\em The left-\/hand side operand. \end{DoxyCompactList}\item 
+\Hypertarget{class_mult_expr_ae70fd4159bdde5ae4beaade8510d9103}\label{class_mult_expr_ae70fd4159bdde5ae4beaade8510d9103} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} {\bfseries rhs}
+\begin{DoxyCompactList}\small\item\em The right-\/hand side operand. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents a multiplication operation (e.\+g., 3 \texorpdfstring{$\ast$}{*} 4). 
+
+\label{doc-constructors}
+\Hypertarget{class_mult_expr_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_mult_expr_abd0b326f7b3f90caadecede9ddfa3856}\index{MultExpr@{MultExpr}!MultExpr@{MultExpr}}
+\index{MultExpr@{MultExpr}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{MultExpr()}{MultExpr()}}
+{\footnotesize\ttfamily \label{class_mult_expr_abd0b326f7b3f90caadecede9ddfa3856} 
+Mult\+Expr::\+\+Mult\+Expr (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{lhs}{, }\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{rhs}{}\end{DoxyParamCaption})}
+
+
+
+Constructs a \doxylink{class_mult_expr}{Mult\+Expr}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \doxylink{class_mult_expr_a0b49284e5c90d2f9e55df85c37ace717}{lhs}} & The left operand. \\
+\hline
+{\em \doxylink{class_mult_expr_ae70fd4159bdde5ae4beaade8510d9103}{rhs}} & The right operand. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_mult_expr_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_mult_expr_a2083a2c51cca7261235b860f5f7e77b8}\index{MultExpr@{MultExpr}!equals@{equals}}
+\index{equals@{equals}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{equals()}{equals()}}
+{\footnotesize\ttfamily \label{class_mult_expr_a2083a2c51cca7261235b860f5f7e77b8} 
+bool Mult\+Expr::\+equals (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{e}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Checks equality with another expression. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_abf9cdb765fb84304881789d273d7594f}{Expr}}.
+
+\Hypertarget{class_mult_expr_a6ec2543c4976721e5dbf9f6ddbdc0c3c}\index{MultExpr@{MultExpr}!has\_variable@{has\_variable}}
+\index{has\_variable@{has\_variable}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{has\_variable()}{has\_variable()}}
+{\footnotesize\ttfamily \label{class_mult_expr_a6ec2543c4976721e5dbf9f6ddbdc0c3c} 
+bool Mult\+Expr::\+has\+\_\+variable (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns true if either operand contains a variable. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_a92dc26078993a4b9721ea732274a435c}{Expr}}.
+
+\Hypertarget{class_mult_expr_aba807dfeefc21e3a4414949427e21a42}\index{MultExpr@{MultExpr}!interp@{interp}}
+\index{interp@{interp}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{interp()}{interp()}}
+{\footnotesize\ttfamily \label{class_mult_expr_aba807dfeefc21e3a4414949427e21a42} 
+int Mult\+Expr::\+interp (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns the product of the left and right operands. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_aeba8585d8225419d49166371306542c1}{Expr}}.
+
+\Hypertarget{class_mult_expr_a0a3eb519b307e6ee0293ac57a6929cdc}\index{MultExpr@{MultExpr}!pretty\_print\_at@{pretty\_print\_at}}
+\index{pretty\_print\_at@{pretty\_print\_at}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{pretty\_print\_at()}{pretty\_print\_at()}}
+{\footnotesize\ttfamily \label{class_mult_expr_a0a3eb519b307e6ee0293ac57a6929cdc} 
+void Mult\+Expr::\+pretty\+\_\+print\+\_\+at (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{, }\item[{\doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}}}]{p\+\_\+prec}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Prints the multiplication, handling precedence to minimize parentheses. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_a0674597c8c786bcfbf39345c385a4e7e}{Expr}}.
+
+\Hypertarget{class_mult_expr_a297da1159397bb6d3d11dab5df13770a}\index{MultExpr@{MultExpr}!printExp@{printExp}}
+\index{printExp@{printExp}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{printExp()}{printExp()}}
+{\footnotesize\ttfamily \label{class_mult_expr_a297da1159397bb6d3d11dab5df13770a} 
+void Mult\+Expr::\+print\+Exp (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Prints (lhs\texorpdfstring{$\ast$}{*}rhs) with parentheses. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_addcf135f59a05b0912ba72aa65d82f45}{Expr}}.
+
+\Hypertarget{class_mult_expr_a3e0229a74dc3711cab444d99a9825d8e}\index{MultExpr@{MultExpr}!subst@{subst}}
+\index{subst@{subst}!MultExpr@{MultExpr}}
+\doxysubsubsection{\texorpdfstring{subst()}{subst()}}
+{\footnotesize\ttfamily \label{class_mult_expr_a3e0229a74dc3711cab444d99a9825d8e} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} Mult\+Expr::\+subst (\begin{DoxyParamCaption}\item[{std::\+string}]{name}{, }\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{replacement}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns a new \doxylink{class_mult_expr}{Mult\+Expr} with substitutions applied to children. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_ad5c60cdb33d8757fbd76f632dce7e93a}{Expr}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{expr_8h}{expr.\+h}}\item 
+\doxymbox{\hyperlink{expr_8cpp}{expr.\+cpp}}\end{DoxyCompactItemize}

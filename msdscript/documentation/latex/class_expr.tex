@@ -1,0 +1,232 @@
+\doxysection{Expr Class Reference}
+\hypertarget{class_expr}{}\label{class_expr}\index{Expr@{Expr}}
+
+
+Abstract base class for all expression types.  
+
+
+
+
+{\ttfamily \+\#include $<$expr.\+h$>$}
+
+Inheritance diagram for Expr:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_expr}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+virtual bool \doxymbox{\hyperlink{class_expr_abf9cdb765fb84304881789d273d7594f}{equals}} (\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}e)=0
+\begin{DoxyCompactList}\small\item\em Checks if this expression is structurally equal to another expression. \end{DoxyCompactList}\item 
+virtual int \doxymbox{\hyperlink{class_expr_aeba8585d8225419d49166371306542c1}{interp}} ()=0
+\begin{DoxyCompactList}\small\item\em Evaluates the expression to an integer value. \end{DoxyCompactList}\item 
+virtual bool \doxymbox{\hyperlink{class_expr_a92dc26078993a4b9721ea732274a435c}{has\+\_\+variable}} ()=0
+\begin{DoxyCompactList}\small\item\em Checks if the expression contains a variable. \end{DoxyCompactList}\item 
+virtual \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{class_expr_ad5c60cdb33d8757fbd76f632dce7e93a}{subst}} (std::\+string name, \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}replacement)=0
+\begin{DoxyCompactList}\small\item\em Substitutes a variable with another expression. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{class_expr_addcf135f59a05b0912ba72aa65d82f45}{print\+Exp}} (std::\+ostream \&ot)=0
+\begin{DoxyCompactList}\small\item\em Prints the expression in a strict format to an output stream. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{class_expr_abe130f37bd185ec13c5113de16fc7bf7}{to\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the strict format. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_expr_a747e1f67ac65a4dd86458a03c9caa282}{pretty\+\_\+print}} (std::\+ostream \&ot)
+\begin{DoxyCompactList}\small\item\em Prints the expression in a pretty format. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{class_expr_a6ad7c18234f22d96d6917089b5bd7caa}{to\+\_\+pretty\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the pretty format. \end{DoxyCompactList}\item 
+virtual void \doxymbox{\hyperlink{class_expr_a0674597c8c786bcfbf39345c385a4e7e}{pretty\+\_\+print\+\_\+at}} (std::\+ostream \&ot, \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}} p\+\_\+prec)=0
+\begin{DoxyCompactList}\small\item\em Helper method for pretty printing with precedence context. \end{DoxyCompactList}\item 
+\Hypertarget{class_expr_a1fdcd9b6ed58ec698536118030481b11}\label{class_expr_a1fdcd9b6ed58ec698536118030481b11} 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Expr} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor to ensure proper cleanup of derived classes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Abstract base class for all expression types. 
+
+The \doxylink{class_expr}{Expr} class defines the interface that all expression nodes must implement, including evaluation, equality checking, variable substitution, and printing. 
+
+\label{doc-func-members}
+\Hypertarget{class_expr_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_expr_abf9cdb765fb84304881789d273d7594f}\index{Expr@{Expr}!equals@{equals}}
+\index{equals@{equals}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{equals()}{equals()}}
+{\footnotesize\ttfamily \label{class_expr_abf9cdb765fb84304881789d273d7594f} 
+virtual bool Expr::\+equals (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{e}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Checks if this expression is structurally equal to another expression. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em e} & The expression to compare against. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if the expressions are structurally equivalent, false otherwise. 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_a99bc3ec5ceed883760fa29bf22ba469b}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_a2083a2c51cca7261235b860f5f7e77b8}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_a345c1c83f40ae7bc26494a6f6be6f918}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_aff99d16e288708e7bb001e313ad69d7f}{Var\+Expr}}.
+
+\Hypertarget{class_expr_a92dc26078993a4b9721ea732274a435c}\index{Expr@{Expr}!has\_variable@{has\_variable}}
+\index{has\_variable@{has\_variable}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{has\_variable()}{has\_variable()}}
+{\footnotesize\ttfamily \label{class_expr_a92dc26078993a4b9721ea732274a435c} 
+virtual bool Expr::\+has\+\_\+variable (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Checks if the expression contains a variable. 
+
+\begin{DoxyReturn}{Returns}
+true if a variable is present in the expression tree, false otherwise. 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_a90efb4683399206101463e8cefd6e967}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_a6ec2543c4976721e5dbf9f6ddbdc0c3c}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_a688fa97c58c339c17378c803cddc14ea}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_a133fe646e53039829a89ad73dad88ef6}{Var\+Expr}}.
+
+\Hypertarget{class_expr_aeba8585d8225419d49166371306542c1}\index{Expr@{Expr}!interp@{interp}}
+\index{interp@{interp}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{interp()}{interp()}}
+{\footnotesize\ttfamily \label{class_expr_aeba8585d8225419d49166371306542c1} 
+virtual int Expr::\+interp (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Evaluates the expression to an integer value. 
+
+\begin{DoxyReturn}{Returns}
+The calculated integer value. 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std::\+runtime\+\_\+error} & if the expression contains a variable (cannot evaluate). \\
+\hline
+\end{DoxyExceptions}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_a05dc1cb4091801233c41ea2aca311838}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_aba807dfeefc21e3a4414949427e21a42}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_accf2cbee4d176ed39e4a759d09ad9453}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_aaa180a72599f869c4f0081a36f421c71}{Var\+Expr}}.
+
+\Hypertarget{class_expr_a747e1f67ac65a4dd86458a03c9caa282}\index{Expr@{Expr}!pretty\_print@{pretty\_print}}
+\index{pretty\_print@{pretty\_print}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{pretty\_print()}{pretty\_print()}}
+{\footnotesize\ttfamily \label{class_expr_a747e1f67ac65a4dd86458a03c9caa282} 
+void Expr::\+pretty\+\_\+print (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{}\end{DoxyParamCaption})}
+
+
+
+Prints the expression in a pretty format. 
+
+This method handles spacing and omits unnecessary parentheses based on operator precedence and associativity.
+
+
+\begin{DoxyParams}{Parameters}
+{\em ot} & The output stream to print to. \\
+\hline
+\end{DoxyParams}
+\Hypertarget{class_expr_a0674597c8c786bcfbf39345c385a4e7e}\index{Expr@{Expr}!pretty\_print\_at@{pretty\_print\_at}}
+\index{pretty\_print\_at@{pretty\_print\_at}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{pretty\_print\_at()}{pretty\_print\_at()}}
+{\footnotesize\ttfamily \label{class_expr_a0674597c8c786bcfbf39345c385a4e7e} 
+virtual void Expr::\+pretty\+\_\+print\+\_\+at (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{, }\item[{\doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}}}]{p\+\_\+prec}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Helper method for pretty printing with precedence context. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ot} & The output stream to print to. \\
+\hline
+{\em p\+\_\+prec} & The precedence level of the parent expression. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_a95c5eb932ab99c4ed1b16ebadf401c20}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_a0a3eb519b307e6ee0293ac57a6929cdc}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_adad65eb6a41483f27b9de962d776f3ed}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_a230df09e0123da3630886f128e682a7e}{Var\+Expr}}.
+
+\Hypertarget{class_expr_addcf135f59a05b0912ba72aa65d82f45}\index{Expr@{Expr}!printExp@{printExp}}
+\index{printExp@{printExp}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{printExp()}{printExp()}}
+{\footnotesize\ttfamily \label{class_expr_addcf135f59a05b0912ba72aa65d82f45} 
+virtual void Expr::\+print\+Exp (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Prints the expression in a strict format to an output stream. 
+
+The strict format includes parentheses around every operation and contains no spaces. Example:\+ ((1+2)\texorpdfstring{$\ast$}{*}3)
+
+
+\begin{DoxyParams}{Parameters}
+{\em ot} & The output stream to print to. \\
+\hline
+\end{DoxyParams}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_a6d9641516e77aa47ff45941978a8a0f2}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_a297da1159397bb6d3d11dab5df13770a}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_aca6403fe8e51d9cbcc78316438950099}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_a7ae0b7e26ffcfb5cd4dd2687831fce3f}{Var\+Expr}}.
+
+\Hypertarget{class_expr_ad5c60cdb33d8757fbd76f632dce7e93a}\index{Expr@{Expr}!subst@{subst}}
+\index{subst@{subst}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{subst()}{subst()}}
+{\footnotesize\ttfamily \label{class_expr_ad5c60cdb33d8757fbd76f632dce7e93a} 
+virtual \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} Expr::\+subst (\begin{DoxyParamCaption}\item[{std::\+string}]{name}{, }\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{replacement}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [pure virtual]}}
+
+
+
+Substitutes a variable with another expression. 
+
+
+\begin{DoxyItemize}
+\item Creates a new expression tree where every occurrence of the specified variable is replaced by the replacement expression. The original expression is not modified.
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & The name of the variable to substitute. \\
+\hline
+{\em replacement} & The expression to replace the variable with. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A new \doxylink{class_expr}{Expr} object with the substitution applied. 
+\end{DoxyReturn}
+
+
+Implemented in \doxymbox{\hyperlink{class_add_expr_af90b074c1cef44a526476951e30ca1b2}{Add\+Expr}}, \doxymbox{\hyperlink{class_mult_expr_a3e0229a74dc3711cab444d99a9825d8e}{Mult\+Expr}}, \doxymbox{\hyperlink{class_num_expr_a8e284181fe8d16ccba7e01108b221611}{Num\+Expr}}, and \doxymbox{\hyperlink{class_var_expr_a950d21021a5050a5fe3c480571b20bca}{Var\+Expr}}.
+
+\Hypertarget{class_expr_a6ad7c18234f22d96d6917089b5bd7caa}\index{Expr@{Expr}!to\_pretty\_string@{to\_pretty\_string}}
+\index{to\_pretty\_string@{to\_pretty\_string}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{to\_pretty\_string()}{to\_pretty\_string()}}
+{\footnotesize\ttfamily \label{class_expr_a6ad7c18234f22d96d6917089b5bd7caa} 
+std::\+string Expr::\+to\+\_\+pretty\+\_\+string (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Converts the expression to a string using the pretty format. 
+
+\begin{DoxyReturn}{Returns}
+A string representation of the expression (pretty format). 
+\end{DoxyReturn}
+\Hypertarget{class_expr_abe130f37bd185ec13c5113de16fc7bf7}\index{Expr@{Expr}!to\_string@{to\_string}}
+\index{to\_string@{to\_string}!Expr@{Expr}}
+\doxysubsubsection{\texorpdfstring{to\_string()}{to\_string()}}
+{\footnotesize\ttfamily \label{class_expr_abe130f37bd185ec13c5113de16fc7bf7} 
+std::\+string Expr::\+to\+\_\+string (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Converts the expression to a string using the strict format. 
+
+\begin{DoxyReturn}{Returns}
+A string representation of the expression (strict format). 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{expr_8h}{expr.\+h}}\item 
+\doxymbox{\hyperlink{expr_8cpp}{expr.\+cpp}}\end{DoxyCompactItemize}

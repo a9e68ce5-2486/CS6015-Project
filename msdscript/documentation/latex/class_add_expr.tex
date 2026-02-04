@@ -1,0 +1,174 @@
+\doxysection{Add\+Expr Class Reference}
+\hypertarget{class_add_expr}{}\label{class_add_expr}\index{AddExpr@{AddExpr}}
+
+
+Represents an addition operation (e.\+g., 1 + 2).  
+
+
+
+
+{\ttfamily \+\#include $<$expr.\+h$>$}
+
+Inheritance diagram for Add\+Expr:\+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_add_expr}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{class_add_expr_a42e626ebbd6f085cf57e6cd40028cb8c}{Add\+Expr}} (\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{class_add_expr_a53fe7b8cc66b2f439a42092eb0eb2d43}{lhs}}, \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}\doxymbox{\hyperlink{class_add_expr_a5a4544f1e9834ff5f00af0d334ae5df5}{rhs}})
+\begin{DoxyCompactList}\small\item\em Constructs an \doxylink{class_add_expr}{Add\+Expr}. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_add_expr_a99bc3ec5ceed883760fa29bf22ba469b}{equals}} (\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}e) override
+\begin{DoxyCompactList}\small\item\em Checks equality with another expression. \end{DoxyCompactList}\item 
+int \doxymbox{\hyperlink{class_add_expr_a05dc1cb4091801233c41ea2aca311838}{interp}} () override
+\begin{DoxyCompactList}\small\item\em Returns the sum of the left and right operands. \end{DoxyCompactList}\item 
+bool \doxymbox{\hyperlink{class_add_expr_a90efb4683399206101463e8cefd6e967}{has\+\_\+variable}} () override
+\begin{DoxyCompactList}\small\item\em Returns true if either operand contains a variable. \end{DoxyCompactList}\item 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} \doxymbox{\hyperlink{class_add_expr_af90b074c1cef44a526476951e30ca1b2}{subst}} (std::\+string name, \doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}replacement) override
+\begin{DoxyCompactList}\small\item\em Returns a new \doxylink{class_add_expr}{Add\+Expr} with substitutions applied to children. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_add_expr_a6d9641516e77aa47ff45941978a8a0f2}{print\+Exp}} (std::\+ostream \&ot) override
+\begin{DoxyCompactList}\small\item\em Prints (lhs+rhs) with parentheses. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_add_expr_a95c5eb932ab99c4ed1b16ebadf401c20}{pretty\+\_\+print\+\_\+at}} (std::\+ostream \&ot, \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}} p\+\_\+prec) override
+\begin{DoxyCompactList}\small\item\em Prints the addition, handling precedence to minimize parentheses. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Public Member Functions inherited from \doxymbox{\hyperlink{class_expr}{Expr}}}
+\begin{DoxyCompactItemize}
+\item 
+std::\+string \doxymbox{\hyperlink{class_expr_abe130f37bd185ec13c5113de16fc7bf7}{to\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the strict format. \end{DoxyCompactList}\item 
+void \doxymbox{\hyperlink{class_expr_a747e1f67ac65a4dd86458a03c9caa282}{pretty\+\_\+print}} (std::\+ostream \&ot)
+\begin{DoxyCompactList}\small\item\em Prints the expression in a pretty format. \end{DoxyCompactList}\item 
+std::\+string \doxymbox{\hyperlink{class_expr_a6ad7c18234f22d96d6917089b5bd7caa}{to\+\_\+pretty\+\_\+string}} ()
+\begin{DoxyCompactList}\small\item\em Converts the expression to a string using the pretty format. \end{DoxyCompactList}\item 
+virtual {\bfseries \texorpdfstring{$\sim$}{\string~}\+Expr} ()
+\begin{DoxyCompactList}\small\item\em Virtual destructor to ensure proper cleanup of derived classes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{class_add_expr_a53fe7b8cc66b2f439a42092eb0eb2d43}\label{class_add_expr_a53fe7b8cc66b2f439a42092eb0eb2d43} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} {\bfseries lhs}
+\begin{DoxyCompactList}\small\item\em The left-\/hand side operand. \end{DoxyCompactList}\item 
+\Hypertarget{class_add_expr_a5a4544f1e9834ff5f00af0d334ae5df5}\label{class_add_expr_a5a4544f1e9834ff5f00af0d334ae5df5} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} {\bfseries rhs}
+\begin{DoxyCompactList}\small\item\em The right-\/hand side operand. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Represents an addition operation (e.\+g., 1 + 2). 
+
+\label{doc-constructors}
+\Hypertarget{class_add_expr_doc-constructors}
+\doxysubsection{Constructor \& Destructor Documentation}
+\Hypertarget{class_add_expr_a42e626ebbd6f085cf57e6cd40028cb8c}\index{AddExpr@{AddExpr}!AddExpr@{AddExpr}}
+\index{AddExpr@{AddExpr}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{AddExpr()}{AddExpr()}}
+{\footnotesize\ttfamily \label{class_add_expr_a42e626ebbd6f085cf57e6cd40028cb8c} 
+Add\+Expr::\+\+Add\+Expr (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{lhs}{, }\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{rhs}{}\end{DoxyParamCaption})}
+
+
+
+Constructs an \doxylink{class_add_expr}{Add\+Expr}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em \doxylink{class_add_expr_a53fe7b8cc66b2f439a42092eb0eb2d43}{lhs}} & The left operand. \\
+\hline
+{\em \doxylink{class_add_expr_a5a4544f1e9834ff5f00af0d334ae5df5}{rhs}} & The right operand. \\
+\hline
+\end{DoxyParams}
+
+
+\label{doc-func-members}
+\Hypertarget{class_add_expr_doc-func-members}
+\doxysubsection{Member Function Documentation}
+\Hypertarget{class_add_expr_a99bc3ec5ceed883760fa29bf22ba469b}\index{AddExpr@{AddExpr}!equals@{equals}}
+\index{equals@{equals}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{equals()}{equals()}}
+{\footnotesize\ttfamily \label{class_add_expr_a99bc3ec5ceed883760fa29bf22ba469b} 
+bool Add\+Expr::\+equals (\begin{DoxyParamCaption}\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{e}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Checks equality with another expression. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_abf9cdb765fb84304881789d273d7594f}{Expr}}.
+
+\Hypertarget{class_add_expr_a90efb4683399206101463e8cefd6e967}\index{AddExpr@{AddExpr}!has\_variable@{has\_variable}}
+\index{has\_variable@{has\_variable}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{has\_variable()}{has\_variable()}}
+{\footnotesize\ttfamily \label{class_add_expr_a90efb4683399206101463e8cefd6e967} 
+bool Add\+Expr::\+has\+\_\+variable (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns true if either operand contains a variable. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_a92dc26078993a4b9721ea732274a435c}{Expr}}.
+
+\Hypertarget{class_add_expr_a05dc1cb4091801233c41ea2aca311838}\index{AddExpr@{AddExpr}!interp@{interp}}
+\index{interp@{interp}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{interp()}{interp()}}
+{\footnotesize\ttfamily \label{class_add_expr_a05dc1cb4091801233c41ea2aca311838} 
+int Add\+Expr::\+interp (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns the sum of the left and right operands. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_aeba8585d8225419d49166371306542c1}{Expr}}.
+
+\Hypertarget{class_add_expr_a95c5eb932ab99c4ed1b16ebadf401c20}\index{AddExpr@{AddExpr}!pretty\_print\_at@{pretty\_print\_at}}
+\index{pretty\_print\_at@{pretty\_print\_at}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{pretty\_print\_at()}{pretty\_print\_at()}}
+{\footnotesize\ttfamily \label{class_add_expr_a95c5eb932ab99c4ed1b16ebadf401c20} 
+void Add\+Expr::\+pretty\+\_\+print\+\_\+at (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{, }\item[{\doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}}}]{p\+\_\+prec}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Prints the addition, handling precedence to minimize parentheses. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_a0674597c8c786bcfbf39345c385a4e7e}{Expr}}.
+
+\Hypertarget{class_add_expr_a6d9641516e77aa47ff45941978a8a0f2}\index{AddExpr@{AddExpr}!printExp@{printExp}}
+\index{printExp@{printExp}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{printExp()}{printExp()}}
+{\footnotesize\ttfamily \label{class_add_expr_a6d9641516e77aa47ff45941978a8a0f2} 
+void Add\+Expr::\+print\+Exp (\begin{DoxyParamCaption}\item[{std::\+ostream \&}]{ot}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Prints (lhs+rhs) with parentheses. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_addcf135f59a05b0912ba72aa65d82f45}{Expr}}.
+
+\Hypertarget{class_add_expr_af90b074c1cef44a526476951e30ca1b2}\index{AddExpr@{AddExpr}!subst@{subst}}
+\index{subst@{subst}!AddExpr@{AddExpr}}
+\doxysubsubsection{\texorpdfstring{subst()}{subst()}}
+{\footnotesize\ttfamily \label{class_add_expr_af90b074c1cef44a526476951e30ca1b2} 
+\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*} Add\+Expr::\+subst (\begin{DoxyParamCaption}\item[{std::\+string}]{name}{, }\item[{\doxymbox{\hyperlink{class_expr}{Expr}} \texorpdfstring{$\ast$}{*}}]{replacement}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}
+
+
+
+Returns a new \doxylink{class_add_expr}{Add\+Expr} with substitutions applied to children. 
+
+
+
+Implements \doxymbox{\hyperlink{class_expr_ad5c60cdb33d8757fbd76f632dce7e93a}{Expr}}.
+
+
+
+The documentation for this class was generated from the following files:\+\begin{DoxyCompactItemize}
+\item 
+\doxymbox{\hyperlink{expr_8h}{expr.\+h}}\item 
+\doxymbox{\hyperlink{expr_8cpp}{expr.\+cpp}}\end{DoxyCompactItemize}

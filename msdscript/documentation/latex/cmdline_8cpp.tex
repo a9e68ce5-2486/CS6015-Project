@@ -1,0 +1,52 @@
+\doxysection{cmdline.\+cpp File Reference}
+\hypertarget{cmdline_8cpp}{}\label{cmdline_8cpp}\index{cmdline.cpp@{cmdline.cpp}}
+
+
+Implementation of command-\/line argument handling.  
+
+
+{\ttfamily \+\#include "{}catch.\+h"{}}\newline
+{\ttfamily \+\#include "{}cmdline.\+h"{}}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$string$>$}\newline
+{\ttfamily \+\#include $<$cstdlib$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \doxymbox{\hyperlink{cmdline_8cpp_a6ab43ef83f41802b5ea6a08d275daf1e}{use\+\_\+arguments}} (int argc, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}argv)
+\begin{DoxyCompactList}\small\item\em Processes command-\/line arguments. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Implementation of command-\/line argument handling. 
+
+This file implements the logic for parsing arguments. It includes the Catch2 runner configuration to enable testing via the {\ttfamily -\/-\/test} flag. 
+
+\label{doc-func-members}
+\Hypertarget{cmdline_8cpp_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{cmdline_8cpp_a6ab43ef83f41802b5ea6a08d275daf1e}\index{cmdline.cpp@{cmdline.cpp}!use\_arguments@{use\_arguments}}
+\index{use\_arguments@{use\_arguments}!cmdline.cpp@{cmdline.cpp}}
+\doxysubsubsection{\texorpdfstring{use\_arguments()}{use\_arguments()}}
+{\footnotesize\ttfamily \label{cmdline_8cpp_a6ab43ef83f41802b5ea6a08d275daf1e} 
+void use\+\_\+arguments (\begin{DoxyParamCaption}\item[{int}]{argc}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{argv}{}\end{DoxyParamCaption})}
+
+
+
+Processes command-\/line arguments. 
+
+This function iterates through the command-\/line arguments provided by the user and performs actions based on specific flags:\+
+\begin{DoxyItemize}
+\item {\ttfamily -\/-\/help}:\+ Prints a help message and exits.
+\item {\ttfamily -\/-\/test}:\+ Runs the test suite (Catch2) and exits.
+\end{DoxyItemize}
+
+If an unknown argument is encountered, it prints an error message and exits.
+
+
+\begin{DoxyParams}{Parameters}
+{\em argc} & The count of command-\/line arguments. \\
+\hline
+{\em argv} & The array of command-\/line argument strings. \\
+\hline
+\end{DoxyParams}

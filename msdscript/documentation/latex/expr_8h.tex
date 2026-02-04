@@ -1,0 +1,79 @@
+\doxysection{expr.\+h File Reference}
+\hypertarget{expr_8h}{}\label{expr_8h}\index{expr.h@{expr.h}}
+
+
+Defines the abstract Expression class and its concrete subclasses.  
+
+
+{\ttfamily \+\#include $<$string$>$}\newline
+{\ttfamily \+\#include $<$iostream$>$}\newline
+{\ttfamily \+\#include $<$sstream$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \doxymbox{\hyperlink{class_expr}{Expr}}
+\begin{DoxyCompactList}\small\item\em Abstract base class for all expression types. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_num_expr}{Num\+Expr}}
+\begin{DoxyCompactList}\small\item\em Represents an integer number in an expression. \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_add_expr}{Add\+Expr}}
+\begin{DoxyCompactList}\small\item\em Represents an addition operation (e.\+g., 1 + 2). \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_mult_expr}{Mult\+Expr}}
+\begin{DoxyCompactList}\small\item\em Represents a multiplication operation (e.\+g., 3 \texorpdfstring{$\ast$}{*} 4). \end{DoxyCompactList}\item 
+class \doxymbox{\hyperlink{class_var_expr}{Var\+Expr}}
+\begin{DoxyCompactList}\small\item\em Represents a variable in an expression (e.\+g., x). \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}} \{ \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaf120d8115346d86e345cdd23047c9913}{prec\+\_\+none}} = 0
+, \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaa7e895a29ec0f1ce1a214fb44ce230de}{prec\+\_\+add}} = 1
+, \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfac3de395d10b5fa4ccf9e4e1f0a0ef50b}{prec\+\_\+mult}} = 2
+ \}
+\begin{DoxyCompactList}\small\item\em Specifies the precedence level of operators for pretty printing. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Defines the abstract Expression class and its concrete subclasses. 
+
+This file contains the definition of the abstract base class \doxylink{class_expr}{Expr}, along with its derived classes:\+ \doxylink{class_num_expr}{Num\+Expr} (numbers), \doxylink{class_add_expr}{Add\+Expr} (addition), \doxylink{class_mult_expr}{Mult\+Expr} (multiplication), and \doxylink{class_var_expr}{Var\+Expr} (variables).
+
+\begin{DoxyAuthor}{Author}
+MSDScript Student 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2024 
+\end{DoxyDate}
+
+
+\label{doc-enum-members}
+\Hypertarget{expr_8h_doc-enum-members}
+\doxysubsection{Enumeration Type Documentation}
+\Hypertarget{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}\index{expr.h@{expr.h}!precedence\_t@{precedence\_t}}
+\index{precedence\_t@{precedence\_t}!expr.h@{expr.h}}
+\doxysubsubsection{\texorpdfstring{precedence\_t}{precedence\_t}}
+{\footnotesize\ttfamily \label{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf} 
+enum \doxymbox{\hyperlink{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdf}{precedence\+\_\+t}}}
+
+
+
+Specifies the precedence level of operators for pretty printing. 
+
+Used to determine when to add parentheses around expressions. \begin{DoxyEnumFields}[2]{Enumerator}
+\raisebox{\heightof{T}}[0pt][0pt]{\index{prec\_none@{prec\_none}!expr.h@{expr.h}}
+\index{expr.h@{expr.h}!prec\_none@{prec\_none}}
+}\Hypertarget{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaf120d8115346d86e345cdd23047c9913}\label{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaf120d8115346d86e345cdd23047c9913} 
+prec\+\_\+none&No precedence (lowest), usually for the root expression. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{prec\_add@{prec\_add}!expr.h@{expr.h}}
+\index{expr.h@{expr.h}!prec\_add@{prec\_add}}
+}\Hypertarget{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaa7e895a29ec0f1ce1a214fb44ce230de}\label{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfaa7e895a29ec0f1ce1a214fb44ce230de} 
+prec\+\_\+add&Precedence level for addition. \\
+\hline
+
+\raisebox{\heightof{T}}[0pt][0pt]{\index{prec\_mult@{prec\_mult}!expr.h@{expr.h}}
+\index{expr.h@{expr.h}!prec\_mult@{prec\_mult}}
+}\Hypertarget{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfac3de395d10b5fa4ccf9e4e1f0a0ef50b}\label{expr_8h_a9e5fdf365cd8dc7be4d972daf07f8bdfac3de395d10b5fa4ccf9e4e1f0a0ef50b} 
+prec\+\_\+mult&Precedence level for multiplication (highest). \\
+\hline
+
+\end{DoxyEnumFields}

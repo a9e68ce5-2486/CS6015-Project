@@ -21,3 +21,5 @@ test.o: tests.cpp expr.h catch.h
 
 clean:
 	rm -f *.o $(TARGET)
+docs:
+	doxygen Doxyfile
