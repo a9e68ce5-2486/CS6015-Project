@@ -1,0 +1,4 @@
+msdscript
+*.o
+*.dSYM
+documentation/
