@@ -9,37 +9,57 @@
  * Welcome to the MSDScript project documentation.
  * MSDScript is a mathematical expression interpreter capable of parsing,
  * evaluating, and manipulating mathematical formulas involving addition,
- * multiplication, and variables.
- *
- * \section features_sec Features
- *
- * - **Expression Evaluation**: Calculate the integer value of expressions.
- * - **Variable Substitution**: Replace variables with other expressions.
- * - **Pretty Printing**: Format expressions with minimal parentheses based on precedence.
- * - **Command Line Interface**: Support for testing and help commands.
+ * multiplication, variables, and let-bindings.
  *
  * \section usage_sec Usage
  *
  * Run the program from the command line:
- * - `./msdscript --help` : Display help message.
  * - `./msdscript --test` : Run the test suite.
+ * - `./msdscript --interp` : Parse and evaluate an expression from stdin.
+ * - `./msdscript --print` : Parse and print (strict) an expression from stdin.
+ * - `./msdscript --pretty-print` : Parse and pretty-print an expression from stdin.
  *
  * \author MSDScript Student
- * \date 2024
+ * \date 2026
  */
 
 #include "cmdline.h"
+#include "expr.h"
+#include "parse.h"
+#include <iostream>
 
 /**
- * \brief Main entry point of the application.
- *
- * Delegates argument processing to use_arguments().
- *
- * \param argc Argument count.
- * \param argv Argument vector.
- * \return 0 on successful execution.
+ * \brief Main entry point.
+ * Parses input from stdin based on the selected mode.
  */
 int main(int argc, char **argv) {
-    use_arguments(argc, argv);
-    return 0;
+    run_mode_t mode = use_arguments(argc, argv);
+
+    // If no specific mode is set (and use_arguments didn't exit), do nothing.
+    if (mode == do_nothing) {
+        return 0;
+    }
+
+    try {
+        Expr* e = parse(std::cin);
+
+        if (mode == do_interp) {
+            std::cout << e->interp() << std::endl;
+        }
+        else if (mode == do_print) {
+            e->printExp(std::cout);
+            std::cout << std::endl;
+        }
+        else if (mode == do_pretty_print) {
+            std::cout << e->to_pretty_string() << std::endl;
+        }
+
+        // Cleanup (optional but good practice)
+        // delete e;
+        return 0;
+
+    } catch (std::runtime_error &ex) {
+        std::cerr << "Error: " << ex.what() << std::endl;
+        return 1;
+    }
 }

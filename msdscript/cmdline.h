@@ -2,8 +2,8 @@
  * \file cmdline.h
  * \brief Declaration of command-line argument handling functionality.
  *
- * This file contains the function prototype for parsing and processing
- * command-line arguments passed to the MSDScript program.
+ * This file defines the operational modes of the program and the function
+ * prototype for parsing command-line arguments.
  *
  * \author MSDScript Student
  * \date 2024
@@ -13,18 +13,22 @@
 #define CMDLINE_H
 
 /**
+ * \brief Defines the operation mode based on command-line arguments.
+ */
+typedef enum {
+  do_nothing,      ///< No specific action requested.
+  do_interp,       ///< Parse and interpret input expression.
+  do_print,        ///< Parse and print input expression (strict format).
+  do_pretty_print  ///< Parse and pretty-print input expression.
+} run_mode_t;
+
+/**
  * \brief Processes command-line arguments.
- *
- * This function iterates through the command-line arguments provided by the user
- * and performs actions based on specific flags:
- * - `--help`: Prints a help message and exits.
- * - `--test`: Runs the test suite (Catch2) and exits.
- *
- * If an unknown argument is encountered, it prints an error message and exits.
  *
  * \param argc The count of command-line arguments.
  * \param argv The array of command-line argument strings.
+ * \return The requested run mode.
  */
-void use_arguments(int argc, char **argv);
+run_mode_t use_arguments(int argc, char **argv);
 
 #endif // CMDLINE_H

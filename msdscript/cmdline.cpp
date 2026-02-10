@@ -1,29 +1,24 @@
 /**
  * \file cmdline.cpp
  * \brief Implementation of command-line argument handling.
- *
- * This file implements the logic for parsing arguments. It includes the
- * Catch2 runner configuration to enable testing via the `--test` flag.
  */
 
-#define CATCH_CONFIG_RUNNER // Tells Catch2 to use our custom main
+#define CATCH_CONFIG_RUNNER
 #include "catch.h"
 #include "cmdline.h"
 #include <iostream>
 #include <string>
 #include <cstdlib>
 
-void use_arguments(int argc, char **argv) {
+run_mode_t use_arguments(int argc, char **argv) {
     bool test_seen = false;
+    run_mode_t mode = do_nothing;
 
-    // Start from 1 to skip the program name (argv[0])
     for (int i = 1; i < argc; i++) {
         std::string arg = argv[i];
 
         if (arg == "--help") {
-            std::cout << "Allowed arguments:" << std::endl;
-            std::cout << "  --help : Show this help text." << std::endl;
-            std::cout << "  --test : Run tests." << std::endl;
+            std::cout << "Usage: ./msdscript [--test] [--interp] [--print] [--pretty-print]" << std::endl;
             exit(0);
         }
         else if (arg == "--test") {
@@ -31,20 +26,27 @@ void use_arguments(int argc, char **argv) {
                 std::cerr << "Error: '--test' seen more than once." << std::endl;
                 exit(1);
             }
-            
-            // Run Catch2 tests. Returns 0 on success, non-zero on failure.
+            // Run tests and exit
             if (Catch::Session().run() != 0) {
-                std::cerr << "Tests failed!" << std::endl;
                 exit(1);
             }
-            
-            // If tests passed
-            // std::cout << "Tests passed" << std::endl;
             test_seen = true;
+            exit(0);
+        }
+        else if (arg == "--interp") {
+            mode = do_interp;
+        }
+        else if (arg == "--print") {
+            mode = do_print;
+        }
+        else if (arg == "--pretty-print") {
+            mode = do_pretty_print;
         }
         else {
             std::cerr << "Error: Unknown argument '" << arg << "'." << std::endl;
             exit(1);
         }
     }
+    
+    return mode;
 }
