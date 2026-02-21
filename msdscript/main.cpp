@@ -27,20 +27,20 @@
 #include "expr.h"
 #include "parse.h"
 #include <iostream>
+#include <stdexcept>
 
 /**
  * \brief Main entry point.
  * Parses input from stdin based on the selected mode.
  */
 int main(int argc, char **argv) {
-    run_mode_t mode = use_arguments(argc, argv);
-
-    // If no specific mode is set (and use_arguments didn't exit), do nothing.
-    if (mode == do_nothing) {
-        return 0;
-    }
-
     try {
+        run_mode_t mode = use_arguments(argc, argv);
+
+        if (mode == do_nothing) {
+            return 0;
+        }
+
         Expr* e = parse(std::cin);
 
         if (mode == do_interp) {
@@ -54,12 +54,9 @@ int main(int argc, char **argv) {
             std::cout << e->to_pretty_string() << std::endl;
         }
 
-        // Cleanup (optional but good practice)
-        // delete e;
         return 0;
-
     } catch (std::runtime_error &ex) {
-        std::cerr << "Error: " << ex.what() << std::endl;
+        std::cerr << ex.what() << std::endl;
         return 1;
     }
 }

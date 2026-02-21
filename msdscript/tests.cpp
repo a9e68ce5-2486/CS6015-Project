@@ -23,6 +23,50 @@ TEST_CASE("Expr Interp") {
     CHECK_THROWS_WITH((new VarExpr("x"))->interp(), "no value for variable");
 }
 
+TEST_CASE("Expr ToString") {
+    CHECK((new NumExpr(42))->to_string() == "42");
+    CHECK((new VarExpr("abc"))->to_string() == "abc");
+    CHECK((new AddExpr(new NumExpr(1), new NumExpr(2)))->to_string() == "(1+2)");
+    CHECK((new MultExpr(new NumExpr(3), new NumExpr(4)))->to_string() == "(3*4)");
+    CHECK((new AddExpr(new MultExpr(new NumExpr(2), new NumExpr(3)), new NumExpr(4)))
+          ->to_string() == "((2*3)+4)");
+    CHECK((new LetExpr("x", new NumExpr(5), new AddExpr(new VarExpr("x"), new NumExpr(1))))
+          ->to_string() == "(_let x=5 _in (x+1))");
+}
+
+TEST_CASE("Expr Interp Complex") {
+    CHECK((new MultExpr(new AddExpr(new NumExpr(2), new NumExpr(3)), new NumExpr(4)))->interp() == 20);
+    CHECK((new LetExpr("x", new NumExpr(2), new LetExpr("x", new NumExpr(3), new VarExpr("x"))))->interp() == 3);
+    CHECK((new LetExpr("x", new NumExpr(2),
+                       new LetExpr("y", new AddExpr(new VarExpr("x"), new NumExpr(1)),
+                                   new MultExpr(new VarExpr("x"), new VarExpr("y")))))
+          ->interp() == 6);
+}
+
+TEST_CASE("Expr Substitute") {
+    CHECK((new NumExpr(7))->subst("x", new NumExpr(9))->equals(new NumExpr(7)));
+    CHECK((new VarExpr("x"))->subst("x", new NumExpr(9))->equals(new NumExpr(9)));
+    CHECK((new VarExpr("y"))->subst("x", new NumExpr(9))->equals(new VarExpr("y")));
+
+    CHECK((new AddExpr(new VarExpr("x"), new NumExpr(1)))
+          ->subst("x", new NumExpr(9))
+          ->equals(new AddExpr(new NumExpr(9), new NumExpr(1))));
+
+    CHECK((new MultExpr(new VarExpr("x"), new AddExpr(new VarExpr("y"), new NumExpr(2))))
+          ->subst("y", new NumExpr(5))
+          ->equals(new MultExpr(new VarExpr("x"), new AddExpr(new NumExpr(5), new NumExpr(2)))));
+
+    CHECK((new LetExpr("x", new VarExpr("y"), new AddExpr(new VarExpr("x"), new VarExpr("y"))))
+          ->subst("x", new NumExpr(9))
+          ->equals(new LetExpr("x", new VarExpr("y"), new AddExpr(new VarExpr("x"), new VarExpr("y")))));
+
+    CHECK((new LetExpr("x", new AddExpr(new VarExpr("y"), new NumExpr(1)),
+                       new AddExpr(new VarExpr("x"), new VarExpr("y"))))
+          ->subst("y", new NumExpr(2))
+          ->equals(new LetExpr("x", new AddExpr(new NumExpr(2), new NumExpr(1)),
+                               new AddExpr(new VarExpr("x"), new NumExpr(2)))));
+}
+
 // ==========================================
 // LetExpr Tests
 // ==========================================
