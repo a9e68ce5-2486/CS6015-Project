@@ -130,4 +130,21 @@ TEST_CASE("parse") {
   CHECK( parse_str("x * y")->equals(new MultExpr(new VarExpr("x"), new VarExpr("y"))) );
   CHECK( parse_str("z * x + y")->equals(new AddExpr(new MultExpr(new VarExpr("z"), new VarExpr("x")), new VarExpr("y"))) );
   CHECK( parse_str("z * (x + y)")->equals(new MultExpr(new VarExpr("z"), new AddExpr(new VarExpr("x"), new VarExpr("y")))) );
+
+  // let parsing
+  CHECK( parse_str("_let x = 5 _in x")
+        ->equals(new LetExpr("x", new NumExpr(5), new VarExpr("x"))) );
+  CHECK( parse_str("_let x=5 _in x+1")
+        ->equals(new LetExpr("x", new NumExpr(5), new AddExpr(new VarExpr("x"), new NumExpr(1)))) );
+  CHECK( parse_str("_let x = 2 _in _let y = x+1 _in y*3")
+        ->equals(new LetExpr("x", new NumExpr(2),
+                             new LetExpr("y",
+                                         new AddExpr(new VarExpr("x"), new NumExpr(1)),
+                                         new MultExpr(new VarExpr("y"), new NumExpr(3))))) );
+
+  CHECK_THROWS_WITH( parse_str("_let = 5 _in x"), "invalid input" );
+  CHECK_THROWS_WITH( parse_str("_let x 5 _in x"), "invalid input" );
+  CHECK_THROWS_WITH( parse_str("_let x = _in x"), "invalid input" );
+  CHECK_THROWS_WITH( parse_str("_let x = 5 in x"), "invalid input" );
+  CHECK_THROWS_WITH( parse_str("_let x = 5 _in"), "invalid input" );
 }
