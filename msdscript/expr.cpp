@@ -4,6 +4,7 @@
  */
 
 #include "expr.h"
+#include "val.h"
 #include <stdexcept>
 #include <sstream>
 
@@ -42,8 +43,8 @@ bool NumExpr::equals(Expr *e) {
     return this->val == n->val;
 }
 
-int NumExpr::interp() {
-    return this->val;
+Val* NumExpr::interp() {
+    return new NumVal(this->val);
 }
 
 bool NumExpr::has_variable() {
@@ -77,8 +78,10 @@ bool AddExpr::equals(Expr *e) {
     return this->lhs->equals(a->lhs) && this->rhs->equals(a->rhs);
 }
 
-int AddExpr::interp() {
-    return this->lhs->interp() + this->rhs->interp();
+Val* AddExpr::interp() {
+    Val* lhs_val = this->lhs->interp();
+    Val* rhs_val = this->rhs->interp();
+    return lhs_val->add_to(rhs_val);
 }
 
 bool AddExpr::has_variable() {
@@ -136,8 +139,10 @@ bool MultExpr::equals(Expr *e) {
     return this->lhs->equals(m->lhs) && this->rhs->equals(m->rhs);
 }
 
-int MultExpr::interp() {
-    return this->lhs->interp() * this->rhs->interp();
+Val* MultExpr::interp() {
+    Val* lhs_val = this->lhs->interp();
+    Val* rhs_val = this->rhs->interp();
+    return lhs_val->mult_with(rhs_val);
 }
 
 bool MultExpr::has_variable() {
@@ -193,7 +198,7 @@ bool VarExpr::equals(Expr *e) {
     return this->name == v->name;
 }
 
-int VarExpr::interp() {
+Val* VarExpr::interp() {
     throw std::runtime_error("no value for variable");
 }
 
@@ -235,9 +240,9 @@ bool LetExpr::equals(Expr *e) {
            (this->body->equals(l->body));
 }
 
-int LetExpr::interp() {
-    int rhs_val = this->rhs->interp();
-    Expr* new_body = this->body->subst(this->lhs, new NumExpr(rhs_val));
+Val* LetExpr::interp() {
+    Val* rhs_val = this->rhs->interp();
+    Expr* new_body = this->body->subst(this->lhs, rhs_val->to_expr());
     return new_body->interp();
 }
 

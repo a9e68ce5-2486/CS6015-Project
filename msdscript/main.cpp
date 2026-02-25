@@ -26,6 +26,7 @@
 #include "cmdline.h"
 #include "expr.h"
 #include "parse.h"
+#include "val.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -44,7 +45,7 @@ int main(int argc, char **argv) {
         Expr* e = parse(std::cin);
 
         if (mode == do_interp) {
-            std::cout << e->interp() << std::endl;
+            std::cout << e->interp()->to_string() << std::endl;
         }
         else if (mode == do_print) {
             e->printExp(std::cout);

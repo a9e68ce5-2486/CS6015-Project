@@ -14,6 +14,8 @@
 #include <iostream>
 #include <sstream>
 
+class Val;
+
 /**
  * \brief Specifies the precedence level of operators for pretty printing.
  */
@@ -29,7 +31,7 @@ typedef enum {
 class Expr {
 public:
     virtual bool equals(Expr *e) = 0;
-    virtual int interp() = 0;
+    virtual Val* interp() = 0;
     virtual bool has_variable() = 0;
     virtual Expr* subst(std::string name, Expr* replacement) = 0;
 
@@ -59,7 +61,7 @@ public:
     int val;
     NumExpr(int val);
     bool equals(Expr *e) override;
-    int interp() override;
+    Val* interp() override;
     bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
@@ -72,7 +74,7 @@ public:
     Expr *rhs;
     AddExpr(Expr *lhs, Expr *rhs);
     bool equals(Expr *e) override;
-    int interp() override;
+    Val* interp() override;
     bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
@@ -85,7 +87,7 @@ public:
     Expr *rhs;
     MultExpr(Expr *lhs, Expr *rhs);
     bool equals(Expr *e) override;
-    int interp() override;
+    Val* interp() override;
     bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
@@ -97,7 +99,7 @@ public:
     std::string name;
     VarExpr(std::string name);
     bool equals(Expr *e) override;
-    int interp() override;
+    Val* interp() override;
     bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
@@ -112,7 +114,7 @@ public:
 
     LetExpr(std::string lhs, Expr *rhs, Expr *body);
     bool equals(Expr *e) override;
-    int interp() override;
+    Val* interp() override;
     bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;

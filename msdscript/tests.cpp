@@ -5,6 +5,7 @@
 #include "catch.h"
 #include "expr.h"
 #include "parse.h"
+#include "val.h"
 #include <stdexcept>
 
 // ==========================================
@@ -18,9 +19,19 @@ TEST_CASE("Expr Equals") {
 }
 
 TEST_CASE("Expr Interp") {
-    CHECK((new NumExpr(10))->interp() == 10);
-    CHECK((new AddExpr(new NumExpr(2), new NumExpr(3)))->interp() == 5);
+    CHECK((new NumExpr(10))->interp()->equals(new NumVal(10)));
+    CHECK((new AddExpr(new NumExpr(2), new NumExpr(3)))->interp()->equals(new NumVal(5)));
     CHECK_THROWS_WITH((new VarExpr("x"))->interp(), "no value for variable");
+}
+
+TEST_CASE("NumVal Basics") {
+    CHECK((new NumVal(10))->equals(new NumVal(10)));
+    CHECK((new NumVal(10))->equals(new NumVal(11)) == false);
+    CHECK((new NumVal(10))->equals(nullptr) == false);
+    CHECK((new NumVal(4))->add_to(new NumVal(6))->equals(new NumVal(10)));
+    CHECK((new NumVal(4))->mult_with(new NumVal(6))->equals(new NumVal(24)));
+    CHECK((new NumVal(7))->to_expr()->equals(new NumExpr(7)));
+    CHECK((new NumVal(7))->to_string() == "7");
 }
 
 TEST_CASE("Expr ToString") {
@@ -35,12 +46,11 @@ TEST_CASE("Expr ToString") {
 }
 
 TEST_CASE("Expr Interp Complex") {
-    CHECK((new MultExpr(new AddExpr(new NumExpr(2), new NumExpr(3)), new NumExpr(4)))->interp() == 20);
-    CHECK((new LetExpr("x", new NumExpr(2), new LetExpr("x", new NumExpr(3), new VarExpr("x"))))->interp() == 3);
+    CHECK((new MultExpr(new AddExpr(new NumExpr(2), new NumExpr(3)), new NumExpr(4)))->interp()->equals(new NumVal(20)));
+    CHECK((new LetExpr("x", new NumExpr(2), new LetExpr("x", new NumExpr(3), new VarExpr("x"))))->interp()->equals(new NumVal(3)));
     CHECK((new LetExpr("x", new NumExpr(2),
                        new LetExpr("y", new AddExpr(new VarExpr("x"), new NumExpr(1)),
-                                   new MultExpr(new VarExpr("x"), new VarExpr("y")))))
-          ->interp() == 6);
+                                   new MultExpr(new VarExpr("x"), new VarExpr("y")))))->interp()->equals(new NumVal(6)));
 }
 
 TEST_CASE("Expr Substitute") {
@@ -74,10 +84,10 @@ TEST_CASE("LetExpr Basic") {
     CHECK((new LetExpr("x", new NumExpr(5), new VarExpr("x")))
           ->equals(new LetExpr("x", new NumExpr(5), new VarExpr("x"))) == true);
     CHECK((new LetExpr("x", new NumExpr(5), new AddExpr(new VarExpr("x"), new NumExpr(1))))
-          ->interp() == 6);
+          ->interp()->equals(new NumVal(6)));
     CHECK((new LetExpr("x", new NumExpr(1), new VarExpr("x")))
           ->subst("x", new NumExpr(5))
-          ->interp() == 1);
+          ->interp()->equals(new NumVal(1)));
 }
 
 TEST_CASE("LetExpr Pretty Print") {
