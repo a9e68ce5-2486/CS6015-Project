@@ -1,16 +1,7 @@
-/**
- * \file expr.cpp
- * \brief Implementation of the Expression classes.
- */
-
 #include "expr.h"
 #include "val.h"
-#include <stdexcept>
 #include <sstream>
-
-// ==================================================
-// Expr Base Class Helpers
-// ==================================================
+#include <stdexcept>
 
 std::string Expr::to_string() {
     std::stringstream st("");
@@ -19,7 +10,7 @@ std::string Expr::to_string() {
 }
 
 void Expr::pretty_print(std::ostream &ot) {
-    std::streampos pos = 0; // Initialize indentation tracking
+    std::streampos pos = 0;
     this->pretty_print_at(ot, prec_none, false, pos);
 }
 
@@ -28,10 +19,6 @@ std::string Expr::to_pretty_string() {
     this->pretty_print(st);
     return st.str();
 }
-
-// ==================================================
-// NumExpr Implementation
-// ==================================================
 
 NumExpr::NumExpr(int val) {
     this->val = val;
@@ -63,9 +50,35 @@ void NumExpr::pretty_print_at(std::ostream &ot, precedence_t, bool, std::streamp
     ot << this->val;
 }
 
-// ==================================================
-// AddExpr Implementation
-// ==================================================
+BoolExpr::BoolExpr(bool val) {
+    this->val = val;
+}
+
+bool BoolExpr::equals(Expr *e) {
+    BoolExpr *b = dynamic_cast<BoolExpr*>(e);
+    if (b == NULL) return false;
+    return this->val == b->val;
+}
+
+Val* BoolExpr::interp() {
+    return new BoolVal(this->val);
+}
+
+bool BoolExpr::has_variable() {
+    return false;
+}
+
+Expr* BoolExpr::subst(std::string, Expr*) {
+    return new BoolExpr(this->val);
+}
+
+void BoolExpr::printExp(std::ostream &ot) {
+    ot << (this->val ? "_true" : "_false");
+}
+
+void BoolExpr::pretty_print_at(std::ostream &ot, precedence_t, bool, std::streampos&) {
+    ot << (this->val ? "_true" : "_false");
+}
 
 AddExpr::AddExpr(Expr *lhs, Expr *rhs) {
     this->lhs = lhs;
@@ -79,9 +92,7 @@ bool AddExpr::equals(Expr *e) {
 }
 
 Val* AddExpr::interp() {
-    Val* lhs_val = this->lhs->interp();
-    Val* rhs_val = this->rhs->interp();
-    return lhs_val->add_to(rhs_val);
+    return this->lhs->interp()->add_to(this->rhs->interp());
 }
 
 bool AddExpr::has_variable() {
@@ -89,44 +100,29 @@ bool AddExpr::has_variable() {
 }
 
 Expr* AddExpr::subst(std::string name, Expr* replacement) {
-    return new AddExpr(
-        this->lhs->subst(name, replacement),
-        this->rhs->subst(name, replacement)
-    );
+    return new AddExpr(this->lhs->subst(name, replacement), this->rhs->subst(name, replacement));
 }
 
 void AddExpr::printExp(std::ostream &ot) {
     ot << "(";
-    lhs->printExp(ot);
+    this->lhs->printExp(ot);
     ot << "+";
-    rhs->printExp(ot);
+    this->rhs->printExp(ot);
     ot << ")";
 }
 
-void AddExpr::pretty_print_at(std::ostream &ot, precedence_t p_prec, bool let_paren, std::streampos& pos) {
-    // 1. 判斷自己是否因優先權需要括號
+void AddExpr::pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) {
     bool prec_parens = (p_prec > prec_add);
-    
     if (prec_parens) ot << "(";
-    
-    // 左邊：永遠需要保護 Let (因為 Let 優先權最低，且在左邊如果不加括號會被吃掉)
-    lhs->pretty_print_at(ot, (precedence_t)(prec_add + 1), true, pos);
-    
-    ot << " + ";
-    
-    // 右邊：修正邏輯！
-    // 如果我自己(Add)已經加了括號，那我的括號已經保護了裡面的內容，
-    // 所以右邊小孩不需要繼承外面的 let_paren 壓力。
-    bool rhs_let_paren = prec_parens ? false : let_paren;
 
-    rhs->pretty_print_at(ot, prec_add, rhs_let_paren, pos);
-    
+    this->lhs->pretty_print_at(ot, (precedence_t)(prec_add + 1), true, pos);
+    ot << " + ";
+
+    bool rhs_keyword_paren = prec_parens ? false : keyword_paren;
+    this->rhs->pretty_print_at(ot, prec_add, rhs_keyword_paren, pos);
+
     if (prec_parens) ot << ")";
 }
-
-// ==================================================
-// MultExpr Implementation
-// ==================================================
 
 MultExpr::MultExpr(Expr *lhs, Expr *rhs) {
     this->lhs = lhs;
@@ -140,9 +136,7 @@ bool MultExpr::equals(Expr *e) {
 }
 
 Val* MultExpr::interp() {
-    Val* lhs_val = this->lhs->interp();
-    Val* rhs_val = this->rhs->interp();
-    return lhs_val->mult_with(rhs_val);
+    return this->lhs->interp()->mult_with(this->rhs->interp());
 }
 
 bool MultExpr::has_variable() {
@@ -150,43 +144,75 @@ bool MultExpr::has_variable() {
 }
 
 Expr* MultExpr::subst(std::string name, Expr* replacement) {
-    return new MultExpr(
-        this->lhs->subst(name, replacement),
-        this->rhs->subst(name, replacement)
-    );
+    return new MultExpr(this->lhs->subst(name, replacement), this->rhs->subst(name, replacement));
 }
 
 void MultExpr::printExp(std::ostream &ot) {
     ot << "(";
-    lhs->printExp(ot);
+    this->lhs->printExp(ot);
     ot << "*";
-    rhs->printExp(ot);
+    this->rhs->printExp(ot);
     ot << ")";
 }
 
-void MultExpr::pretty_print_at(std::ostream &ot, precedence_t p_prec, bool let_paren, std::streampos& pos) {
-    // 1. 判斷自己是否因優先權需要括號
+void MultExpr::pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) {
     bool prec_parens = (p_prec > prec_mult);
-
     if (prec_parens) ot << "(";
-    
-    // 左邊：Let 永遠需要括號
-    lhs->pretty_print_at(ot, (precedence_t)(prec_mult + 1), true, pos);
-    
-    ot << " * ";
-    
-    // 右邊：修正邏輯！
-    // 如果我自己(Mult)已經加了括號，右邊小孩就安全了。
-    bool rhs_let_paren = prec_parens ? false : let_paren;
 
-    rhs->pretty_print_at(ot, prec_mult, rhs_let_paren, pos);
-    
+    this->lhs->pretty_print_at(ot, (precedence_t)(prec_mult + 1), true, pos);
+    ot << " * ";
+
+    bool rhs_keyword_paren = prec_parens ? false : keyword_paren;
+    this->rhs->pretty_print_at(ot, prec_mult, rhs_keyword_paren, pos);
+
     if (prec_parens) ot << ")";
 }
 
-// ==================================================
-// VarExpr Implementation
-// ==================================================
+EqExpr::EqExpr(Expr *lhs, Expr *rhs) {
+    this->lhs = lhs;
+    this->rhs = rhs;
+}
+
+bool EqExpr::equals(Expr *e) {
+    EqExpr *eq = dynamic_cast<EqExpr*>(e);
+    if (eq == NULL) return false;
+    return this->lhs->equals(eq->lhs) && this->rhs->equals(eq->rhs);
+}
+
+Val* EqExpr::interp() {
+    Val* lhs_val = this->lhs->interp();
+    Val* rhs_val = this->rhs->interp();
+    return new BoolVal(lhs_val->equals(rhs_val));
+}
+
+bool EqExpr::has_variable() {
+    return this->lhs->has_variable() || this->rhs->has_variable();
+}
+
+Expr* EqExpr::subst(std::string name, Expr* replacement) {
+    return new EqExpr(this->lhs->subst(name, replacement), this->rhs->subst(name, replacement));
+}
+
+void EqExpr::printExp(std::ostream &ot) {
+    ot << "(";
+    this->lhs->printExp(ot);
+    ot << "==";
+    this->rhs->printExp(ot);
+    ot << ")";
+}
+
+void EqExpr::pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) {
+    bool prec_parens = (p_prec > prec_eq);
+    if (prec_parens) ot << "(";
+
+    this->lhs->pretty_print_at(ot, (precedence_t)(prec_eq + 1), true, pos);
+    ot << " == ";
+
+    bool rhs_keyword_paren = prec_parens ? false : keyword_paren;
+    this->rhs->pretty_print_at(ot, prec_eq, rhs_keyword_paren, pos);
+
+    if (prec_parens) ot << ")";
+}
 
 VarExpr::VarExpr(std::string name) {
     this->name = name;
@@ -209,9 +235,8 @@ bool VarExpr::has_variable() {
 Expr* VarExpr::subst(std::string name, Expr* replacement) {
     if (this->name == name) {
         return replacement;
-    } else {
-        return new VarExpr(this->name);
     }
+    return new VarExpr(this->name);
 }
 
 void VarExpr::printExp(std::ostream &ot) {
@@ -222,10 +247,6 @@ void VarExpr::pretty_print_at(std::ostream &ot, precedence_t, bool, std::streamp
     ot << this->name;
 }
 
-// ==================================================
-// LetExpr Implementation
-// ==================================================
-
 LetExpr::LetExpr(std::string lhs, Expr *rhs, Expr *body) {
     this->lhs = lhs;
     this->rhs = rhs;
@@ -235,9 +256,7 @@ LetExpr::LetExpr(std::string lhs, Expr *rhs, Expr *body) {
 bool LetExpr::equals(Expr *e) {
     LetExpr *l = dynamic_cast<LetExpr*>(e);
     if (l == NULL) return false;
-    return (this->lhs == l->lhs) &&
-           (this->rhs->equals(l->rhs)) &&
-           (this->body->equals(l->body));
+    return this->lhs == l->lhs && this->rhs->equals(l->rhs) && this->body->equals(l->body);
 }
 
 Val* LetExpr::interp() {
@@ -247,19 +266,17 @@ Val* LetExpr::interp() {
 }
 
 bool LetExpr::has_variable() {
-    return (this->rhs->has_variable() || this->body->has_variable());
+    return this->rhs->has_variable() || this->body->has_variable();
 }
 
 Expr* LetExpr::subst(std::string name, Expr* replacement) {
     Expr* new_rhs = this->rhs->subst(name, replacement);
-    
     Expr* new_body;
     if (name == this->lhs) {
-        new_body = this->body; // Shadowing
+        new_body = this->body;
     } else {
         new_body = this->body->subst(name, replacement);
     }
-
     return new LetExpr(this->lhs, new_rhs, new_body);
 }
 
@@ -271,34 +288,98 @@ void LetExpr::printExp(std::ostream &ot) {
     ot << ")";
 }
 
-void LetExpr::pretty_print_at(std::ostream &ot, precedence_t, bool let_paren, std::streampos& pos) {
-    // 1. If parent requested parentheses (let_paren is true), print '('
-    if (let_paren) {
+void LetExpr::pretty_print_at(std::ostream &ot, precedence_t, bool keyword_paren, std::streampos& pos) {
+    if (keyword_paren) {
         ot << "(";
     }
 
-    // 2. Calculate indentation
     long indent = (long)(ot.tellp() - pos);
-    
     ot << "_let " << this->lhs << " = ";
-    
     this->rhs->pretty_print_at(ot, prec_none, false, pos);
-    
+
     ot << "\n";
-    
-    // 3. Update last newline position
     pos = ot.tellp();
-    
-    // 4. Print spaces
+
     for (int i = 0; i < indent; i++) {
         ot << " ";
     }
-    
+
     ot << "_in  ";
-    
     this->body->pretty_print_at(ot, prec_none, false, pos);
 
-    if (let_paren) {
+    if (keyword_paren) {
+        ot << ")";
+    }
+}
+
+IfExpr::IfExpr(Expr *test_part, Expr *then_part, Expr *else_part) {
+    this->test_part = test_part;
+    this->then_part = then_part;
+    this->else_part = else_part;
+}
+
+bool IfExpr::equals(Expr *e) {
+    IfExpr *i = dynamic_cast<IfExpr*>(e);
+    if (i == NULL) return false;
+    return this->test_part->equals(i->test_part)
+        && this->then_part->equals(i->then_part)
+        && this->else_part->equals(i->else_part);
+}
+
+Val* IfExpr::interp() {
+    Val* test_val = this->test_part->interp();
+    if (test_val->is_true()) {
+        return this->then_part->interp();
+    }
+    return this->else_part->interp();
+}
+
+bool IfExpr::has_variable() {
+    return this->test_part->has_variable() || this->then_part->has_variable() || this->else_part->has_variable();
+}
+
+Expr* IfExpr::subst(std::string name, Expr* replacement) {
+    return new IfExpr(this->test_part->subst(name, replacement),
+                      this->then_part->subst(name, replacement),
+                      this->else_part->subst(name, replacement));
+}
+
+void IfExpr::printExp(std::ostream &ot) {
+    ot << "(_if ";
+    this->test_part->printExp(ot);
+    ot << " _then ";
+    this->then_part->printExp(ot);
+    ot << " _else ";
+    this->else_part->printExp(ot);
+    ot << ")";
+}
+
+void IfExpr::pretty_print_at(std::ostream &ot, precedence_t, bool keyword_paren, std::streampos& pos) {
+    if (keyword_paren) {
+        ot << "(";
+    }
+
+    long indent = (long)(ot.tellp() - pos);
+    ot << "_if ";
+    this->test_part->pretty_print_at(ot, prec_none, true, pos);
+
+    ot << "\n";
+    pos = ot.tellp();
+    for (int i = 0; i < indent; i++) {
+        ot << " ";
+    }
+    ot << "_then ";
+    this->then_part->pretty_print_at(ot, prec_none, false, pos);
+
+    ot << "\n";
+    pos = ot.tellp();
+    for (int i = 0; i < indent; i++) {
+        ot << " ";
+    }
+    ot << "_else ";
+    this->else_part->pretty_print_at(ot, prec_none, false, pos);
+
+    if (keyword_paren) {
         ot << ")";
     }
 }

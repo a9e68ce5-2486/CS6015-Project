@@ -52,7 +52,7 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         return random_num(rng);
     }
 
-    int max_kind = env.empty() ? 2 : 3;
+    int max_kind = env.empty() ? 5 : 6;
     std::uniform_int_distribution<int> kind_dist(0, max_kind);
     int kind = kind_dist(rng);
 
@@ -69,6 +69,23 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         std::uniform_int_distribution<int> op_dist(0, 1);
         char op = op_dist(rng) == 0 ? '+' : '*';
         return "(" + lhs + " " + op + " " + rhs + ")";
+    }
+
+    if (kind == 3) {
+        std::string lhs = random_expr(rng, depth - 1, env, name_id);
+        std::string rhs = random_expr(rng, depth - 1, env, name_id);
+        return "(" + lhs + " == " + rhs + ")";
+    }
+
+    if (kind == 4) {
+        return (std::uniform_int_distribution<int>(0, 1)(rng) == 0) ? "_true" : "_false";
+    }
+
+    if (kind == 5) {
+        std::string test = random_expr(rng, depth - 1, env, name_id);
+        std::string then_part = random_expr(rng, depth - 1, env, name_id);
+        std::string else_part = random_expr(rng, depth - 1, env, name_id);
+        return "(_if " + test + " _then " + then_part + " _else " + else_part + ")";
     }
 
     std::string var = random_var(rng, name_id++);
@@ -125,36 +142,45 @@ static int test_single_program(const std::string &program) {
         ExecResult printed = run_mode(program, "--print", expr);
         ExecResult pretty = run_mode(program, "--pretty-print", expr);
 
-        if (interp.exit_code != 0 || printed.exit_code != 0 || pretty.exit_code != 0) {
-            print_failure("single-program: one mode failed on valid random expression", expr, "all", interp, nullptr, program);
-            std::cerr << "print exit=" << printed.exit_code << " pretty exit=" << pretty.exit_code << "\n";
+        if (printed.exit_code != 0 || pretty.exit_code != 0) {
+            print_failure("single-program: --print or --pretty-print failed", expr, "print/pretty", printed, nullptr, program);
+            std::cerr << "pretty exit=" << pretty.exit_code << "\n";
             return 1;
         }
 
         std::string interp_out = trim_trailing_ws(interp.out);
+        std::string interp_err = trim_trailing_ws(interp.err);
 
         ExecResult interp_from_print = run_mode(program, "--interp", printed.out);
-        if (interp_from_print.exit_code != 0 || trim_trailing_ws(interp_from_print.out) != interp_out) {
+        if (interp_from_print.exit_code != interp.exit_code ||
+            trim_trailing_ws(interp_from_print.out) != interp_out ||
+            trim_trailing_ws(interp_from_print.err) != interp_err) {
             print_failure("single-program: --print output changes meaning under --interp",
                           expr,
                           "--interp < print-output",
                           interp_from_print,
                           nullptr,
                           program);
-            std::cerr << "Expected interp: [" << interp_out << "]\n";
+            std::cerr << "Expected interp exit=" << interp.exit_code
+                      << " out=[" << interp_out << "]"
+                      << " err=[" << interp_err << "]\n";
             std::cerr << "Printed form:\n" << printed.out << "\n";
             return 1;
         }
 
         ExecResult interp_from_pretty = run_mode(program, "--interp", pretty.out);
-        if (interp_from_pretty.exit_code != 0 || trim_trailing_ws(interp_from_pretty.out) != interp_out) {
+        if (interp_from_pretty.exit_code != interp.exit_code ||
+            trim_trailing_ws(interp_from_pretty.out) != interp_out ||
+            trim_trailing_ws(interp_from_pretty.err) != interp_err) {
             print_failure("single-program: --pretty-print output changes meaning under --interp",
                           expr,
                           "--interp < pretty-output",
                           interp_from_pretty,
                           nullptr,
                           program);
-            std::cerr << "Expected interp: [" << interp_out << "]\n";
+            std::cerr << "Expected interp exit=" << interp.exit_code
+                      << " out=[" << interp_out << "]"
+                      << " err=[" << interp_err << "]\n";
             std::cerr << "Pretty form:\n" << pretty.out << "\n";
             return 1;
         }
