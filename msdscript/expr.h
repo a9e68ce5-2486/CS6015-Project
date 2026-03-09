@@ -1,8 +1,3 @@
-/**
- * \file expr.h
- * \brief Defines the abstract Expression class and its concrete subclasses.
- */
-
 #ifndef EXPR_H
 #define EXPR_H
 
@@ -16,14 +11,14 @@ typedef enum {
   prec_none = 0,
   prec_eq = 1,
   prec_add = 2,
-  prec_mult = 3
+  prec_mult = 3,
+  prec_call = 4
 } precedence_t;
 
 class Expr {
 public:
     virtual bool equals(Expr *e) = 0;
     virtual Val* interp() = 0;
-    virtual bool has_variable() = 0;
     virtual Expr* subst(std::string name, Expr* replacement) = 0;
 
     virtual void printExp(std::ostream &ot) = 0;
@@ -43,7 +38,6 @@ public:
     NumExpr(int val);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -55,7 +49,6 @@ public:
     BoolExpr(bool val);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -68,7 +61,6 @@ public:
     AddExpr(Expr *lhs, Expr *rhs);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -81,7 +73,6 @@ public:
     MultExpr(Expr *lhs, Expr *rhs);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -94,7 +85,6 @@ public:
     EqExpr(Expr *lhs, Expr *rhs);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -106,7 +96,6 @@ public:
     VarExpr(std::string name);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -121,7 +110,6 @@ public:
     LetExpr(std::string lhs, Expr *rhs, Expr *body);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
@@ -136,7 +124,32 @@ public:
     IfExpr(Expr *test_part, Expr *then_part, Expr *else_part);
     bool equals(Expr *e) override;
     Val* interp() override;
-    bool has_variable() override;
+    Expr* subst(std::string name, Expr* replacement) override;
+    void printExp(std::ostream &ot) override;
+    void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
+};
+
+class FunExpr : public Expr {
+public:
+    std::string formal_arg;
+    Expr *body;
+
+    FunExpr(std::string formal_arg, Expr *body);
+    bool equals(Expr *e) override;
+    Val* interp() override;
+    Expr* subst(std::string name, Expr* replacement) override;
+    void printExp(std::ostream &ot) override;
+    void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;
+};
+
+class CallExpr : public Expr {
+public:
+    Expr *to_be_called;
+    Expr *actual_arg;
+
+    CallExpr(Expr *to_be_called, Expr *actual_arg);
+    bool equals(Expr *e) override;
+    Val* interp() override;
     Expr* subst(std::string name, Expr* replacement) override;
     void printExp(std::ostream &ot) override;
     void pretty_print_at(std::ostream &ot, precedence_t p_prec, bool keyword_paren, std::streampos& pos) override;

@@ -11,6 +11,7 @@ public:
     virtual Val* add_to(Val* other) = 0;
     virtual Val* mult_with(Val* other) = 0;
     virtual bool is_true() = 0;
+    virtual Val* call(Val* actual_arg) = 0;
     virtual Expr* to_expr() = 0;
     virtual std::string to_string() = 0;
     virtual ~Val() {}
@@ -25,6 +26,7 @@ public:
     Val* add_to(Val* other) override;
     Val* mult_with(Val* other) override;
     bool is_true() override;
+    Val* call(Val* actual_arg) override;
     Expr* to_expr() override;
     std::string to_string() override;
 };
@@ -38,6 +40,22 @@ public:
     Val* add_to(Val* other) override;
     Val* mult_with(Val* other) override;
     bool is_true() override;
+    Val* call(Val* actual_arg) override;
+    Expr* to_expr() override;
+    std::string to_string() override;
+};
+
+class FunVal : public Val {
+public:
+    std::string formal_arg;
+    Expr *body;
+
+    FunVal(std::string formal_arg, Expr *body);
+    bool equals(Val* other) override;
+    Val* add_to(Val* other) override;
+    Val* mult_with(Val* other) override;
+    bool is_true() override;
+    Val* call(Val* actual_arg) override;
     Expr* to_expr() override;
     std::string to_string() override;
 };

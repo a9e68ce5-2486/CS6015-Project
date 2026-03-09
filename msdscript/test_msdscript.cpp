@@ -52,7 +52,7 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         return random_num(rng);
     }
 
-    int max_kind = env.empty() ? 5 : 6;
+    int max_kind = env.empty() ? 7 : 8;
     std::uniform_int_distribution<int> kind_dist(0, max_kind);
     int kind = kind_dist(rng);
 
@@ -86,6 +86,22 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         std::string then_part = random_expr(rng, depth - 1, env, name_id);
         std::string else_part = random_expr(rng, depth - 1, env, name_id);
         return "(_if " + test + " _then " + then_part + " _else " + else_part + ")";
+    }
+
+    if (kind == 6) {
+        std::string arg = random_var(rng, name_id++);
+        env.push_back(arg);
+        std::string body = random_expr(rng, depth - 1, env, name_id);
+        return "(_fun (" + arg + ") " + body + ")";
+    }
+
+    if (kind == 7) {
+        std::string arg = random_var(rng, name_id++);
+        std::vector<std::string> body_env = env;
+        body_env.push_back(arg);
+        std::string callee = "(_fun (" + arg + ") " + random_expr(rng, depth - 1, body_env, name_id) + ")";
+        std::string actual = random_expr(rng, depth - 1, env, name_id);
+        return callee + "(" + actual + ")";
     }
 
     std::string var = random_var(rng, name_id++);
