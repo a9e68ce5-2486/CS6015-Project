@@ -1,5 +1,7 @@
 #include "parse.h"
 #include <cctype>
+#include <cstdint>
+#include <limits>
 #include <sstream>
 #include <stdexcept>
 
@@ -152,11 +154,27 @@ Expr* parse_num(std::istream &in) {
 
     if (!isdigit(in.peek())) throw std::runtime_error("invalid input");
 
-    int num = 0;
-    while (isdigit(in.peek())) num = num * 10 + (in.get() - '0');
+    uint64_t limit = negative
+        ? static_cast<uint64_t>(std::numeric_limits<int>::max()) + 1
+        : static_cast<uint64_t>(std::numeric_limits<int>::max());
+    uint64_t num = 0;
 
-    if (negative) num = -num;
-    return new NumExpr(num);
+    while (isdigit(in.peek())) {
+        int digit = in.get() - '0';
+        if (num > (limit - static_cast<uint64_t>(digit)) / 10) {
+            throw std::runtime_error("number too large");
+        }
+        num = num * 10 + static_cast<uint64_t>(digit);
+    }
+
+    if (negative) {
+        if (num == static_cast<uint64_t>(std::numeric_limits<int>::max()) + 1) {
+            return new NumExpr(std::numeric_limits<int>::min());
+        }
+        return new NumExpr(-static_cast<int>(num));
+    }
+
+    return new NumExpr(static_cast<int>(num));
 }
 
 Expr* parse_var(std::istream &in) {

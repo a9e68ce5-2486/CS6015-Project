@@ -2,6 +2,7 @@
 #include "expr.h"
 #include "parse.h"
 #include "val.h"
+#include <limits>
 #include <stdexcept>
 
 TEST_CASE("Expr Equals") {
@@ -30,6 +31,8 @@ TEST_CASE("Value Basics") {
     CHECK((new NumVal(4))->mult_with(new NumVal(6))->equals(new NumVal(24)));
     CHECK_THROWS_WITH((new NumVal(4))->add_to(new BoolVal(true)), "Adding non-numbers");
     CHECK_THROWS_WITH((new NumVal(4))->mult_with(new BoolVal(true)), "Multiplying non-numbers");
+    CHECK_THROWS_WITH((new NumVal(std::numeric_limits<int>::max()))->add_to(new NumVal(1)), "integer overflow");
+    CHECK_THROWS_WITH((new NumVal(214748364))->mult_with(new NumVal(214748364)), "integer overflow");
     CHECK_THROWS_WITH((new NumVal(0))->is_true(), "Condition is not a boolean");
 
     CHECK((new BoolVal(true))->is_true() == true);
@@ -131,6 +134,10 @@ TEST_CASE("Expr Substitute") {
 TEST_CASE("parse") {
     CHECK(parse_str("_true")->equals(new BoolExpr(true)));
     CHECK(parse_str("_false")->equals(new BoolExpr(false)));
+    CHECK(parse_str("2147483647")->equals(new NumExpr(std::numeric_limits<int>::max())));
+    CHECK(parse_str("-2147483648")->equals(new NumExpr(std::numeric_limits<int>::min())));
+    CHECK_THROWS_WITH(parse_str("2147483648"), "number too large");
+    CHECK_THROWS_WITH(parse_str("1000000000000000"), "number too large");
 
     CHECK(parse_str("1==2+3")->equals(new EqExpr(new NumExpr(1), new AddExpr(new NumExpr(2), new NumExpr(3)))));
     CHECK(parse_str("(1==2)+3")->equals(new AddExpr(new EqExpr(new NumExpr(1), new NumExpr(2)), new NumExpr(3))));

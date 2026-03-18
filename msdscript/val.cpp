@@ -1,6 +1,8 @@
 #include "val.h"
 
 #include "expr.h"
+#include <cstdint>
+#include <limits>
 #include <stdexcept>
 
 NumVal::NumVal(int val) {
@@ -15,13 +17,21 @@ bool NumVal::equals(Val* other) {
 Val* NumVal::add_to(Val* other) {
     NumVal* n = dynamic_cast<NumVal*>(other);
     if (n == NULL) throw std::runtime_error("Adding non-numbers");
-    return new NumVal(this->val + n->val);
+    int64_t sum = static_cast<int64_t>(this->val) + static_cast<int64_t>(n->val);
+    if (sum < std::numeric_limits<int>::min() || sum > std::numeric_limits<int>::max()) {
+        throw std::runtime_error("integer overflow");
+    }
+    return new NumVal(static_cast<int>(sum));
 }
 
 Val* NumVal::mult_with(Val* other) {
     NumVal* n = dynamic_cast<NumVal*>(other);
     if (n == NULL) throw std::runtime_error("Multiplying non-numbers");
-    return new NumVal(this->val * n->val);
+    int64_t product = static_cast<int64_t>(this->val) * static_cast<int64_t>(n->val);
+    if (product < std::numeric_limits<int>::min() || product > std::numeric_limits<int>::max()) {
+        throw std::runtime_error("integer overflow");
+    }
+    return new NumVal(static_cast<int>(product));
 }
 
 bool NumVal::is_true() {
