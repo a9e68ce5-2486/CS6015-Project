@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
             return 0;
         }
 
-        Expr* e = parse(std::cin);
+        PTR(Expr) e = parse(std::cin);
 
         if (mode == do_interp) {
             std::cout << e->interp()->to_string() << std::endl;

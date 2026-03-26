@@ -12,6 +12,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include "pointer.h"
 #include "expr.h"
 #include <string>
 #include <iostream>
@@ -23,7 +24,7 @@
  * \return A pointer to the parsed Expr object.
  * \throws std::runtime_error if the string contains invalid syntax.
  */
-Expr* parse_str(std::string s);
+PTR(Expr) parse_str(std::string s);
 
 /**
  * \brief Parses a mathematical expression from an input stream.
@@ -32,6 +33,6 @@ Expr* parse_str(std::string s);
  * \return A pointer to the parsed Expr object.
  * \throws std::runtime_error if the stream contains invalid syntax.
  */
-Expr* parse(std::istream &in);
+PTR(Expr) parse(std::istream &in);
 
 #endif

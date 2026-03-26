@@ -9,26 +9,26 @@ void consume_whitespace(std::istream &in);
 void consume(std::istream &in, int expect);
 void consume_keyword(std::istream &in, std::string keyword);
 std::string parse_keyword_token(std::istream &in);
-Expr* parse_expr(std::istream &in);
-Expr* parse_comparg(std::istream &in);
-Expr* parse_add(std::istream &in);
-Expr* parse_mult(std::istream &in);
-Expr* parse_call(std::istream &in);
-Expr* parse_inner(std::istream &in);
-Expr* parse_num(std::istream &in);
-Expr* parse_var(std::istream &in);
-Expr* parse_let(std::istream &in);
-Expr* parse_if(std::istream &in);
-Expr* parse_fun(std::istream &in);
+PTR(Expr) parse_expr(std::istream &in);
+PTR(Expr) parse_comparg(std::istream &in);
+PTR(Expr) parse_add(std::istream &in);
+PTR(Expr) parse_mult(std::istream &in);
+PTR(Expr) parse_call(std::istream &in);
+PTR(Expr) parse_inner(std::istream &in);
+PTR(Expr) parse_num(std::istream &in);
+PTR(Expr) parse_var(std::istream &in);
+PTR(Expr) parse_let(std::istream &in);
+PTR(Expr) parse_if(std::istream &in);
+PTR(Expr) parse_fun(std::istream &in);
 
-Expr* parse(std::istream &in) {
+PTR(Expr) parse(std::istream &in) {
     consume_whitespace(in);
-    Expr* e = parse_expr(in);
+    PTR(Expr) e = parse_expr(in);
     consume_whitespace(in);
     return e;
 }
 
-Expr* parse_str(std::string s) {
+PTR(Expr) parse_str(std::string s) {
     std::stringstream ss(s);
     return parse(ss);
 }
@@ -59,71 +59,71 @@ std::string parse_keyword_token(std::istream &in) {
     return token;
 }
 
-Expr* parse_expr(std::istream &in) {
-    Expr* lhs = parse_comparg(in);
+PTR(Expr) parse_expr(std::istream &in) {
+    PTR(Expr) lhs = parse_comparg(in);
     consume_whitespace(in);
 
     if (in.peek() == '=') {
         in.get();
         if (in.get() != '=') throw std::runtime_error("invalid input");
-        Expr* rhs = parse_expr(in);
-        return new EqExpr(lhs, rhs);
+        PTR(Expr) rhs = parse_expr(in);
+        return NEW(EqExpr)(lhs, rhs);
     }
 
     return lhs;
 }
 
-Expr* parse_comparg(std::istream &in) { return parse_add(in); }
+PTR(Expr) parse_comparg(std::istream &in) { return parse_add(in); }
 
-Expr* parse_add(std::istream &in) {
-    Expr* lhs = parse_mult(in);
+PTR(Expr) parse_add(std::istream &in) {
+    PTR(Expr) lhs = parse_mult(in);
     consume_whitespace(in);
 
     if (in.peek() == '+') {
         in.get();
-        Expr* rhs = parse_add(in);
-        return new AddExpr(lhs, rhs);
+        PTR(Expr) rhs = parse_add(in);
+        return NEW(AddExpr)(lhs, rhs);
     }
 
     return lhs;
 }
 
-Expr* parse_mult(std::istream &in) {
-    Expr* lhs = parse_call(in);
+PTR(Expr) parse_mult(std::istream &in) {
+    PTR(Expr) lhs = parse_call(in);
     consume_whitespace(in);
 
     if (in.peek() == '*') {
         in.get();
-        Expr* rhs = parse_mult(in);
-        return new MultExpr(lhs, rhs);
+        PTR(Expr) rhs = parse_mult(in);
+        return NEW(MultExpr)(lhs, rhs);
     }
 
     return lhs;
 }
 
-Expr* parse_call(std::istream &in) {
-    Expr* e = parse_inner(in);
+PTR(Expr) parse_call(std::istream &in) {
+    PTR(Expr) e = parse_inner(in);
     consume_whitespace(in);
 
     while (in.peek() == '(') {
         consume(in, '(');
-        Expr* arg = parse_expr(in);
+        PTR(Expr) arg = parse_expr(in);
         consume_whitespace(in);
         consume(in, ')');
-        e = new CallExpr(e, arg);
+        e = NEW(CallExpr)(e, arg);
         consume_whitespace(in);
     }
 
     return e;
 }
 
-Expr* parse_inner(std::istream &in) {
+PTR(Expr) parse_inner(std::istream &in) {
     consume_whitespace(in);
     int c = in.peek();
 
     if (c == '(') {
         consume(in, '(');
-        Expr* e = parse_expr(in);
+        PTR(Expr) e = parse_expr(in);
         consume_whitespace(in);
         consume(in, ')');
         return e;
@@ -136,8 +136,8 @@ Expr* parse_inner(std::istream &in) {
         if (kw == "_let") return parse_let(in);
         if (kw == "_if") return parse_if(in);
         if (kw == "_fun") return parse_fun(in);
-        if (kw == "_true") return new BoolExpr(true);
-        if (kw == "_false") return new BoolExpr(false);
+        if (kw == "_true") return NEW(BoolExpr)(true);
+        if (kw == "_false") return NEW(BoolExpr)(false);
         throw std::runtime_error("invalid input");
     }
 
@@ -145,7 +145,7 @@ Expr* parse_inner(std::istream &in) {
     throw std::runtime_error("invalid input");
 }
 
-Expr* parse_num(std::istream &in) {
+PTR(Expr) parse_num(std::istream &in) {
     bool negative = false;
     if (in.peek() == '-') {
         negative = true;
@@ -169,21 +169,21 @@ Expr* parse_num(std::istream &in) {
 
     if (negative) {
         if (num == static_cast<uint64_t>(std::numeric_limits<int>::max()) + 1) {
-            return new NumExpr(std::numeric_limits<int>::min());
+            return NEW(NumExpr)(std::numeric_limits<int>::min());
         }
-        return new NumExpr(-static_cast<int>(num));
+        return NEW(NumExpr)(-static_cast<int>(num));
     }
 
-    return new NumExpr(static_cast<int>(num));
+    return NEW(NumExpr)(static_cast<int>(num));
 }
 
-Expr* parse_var(std::istream &in) {
+PTR(Expr) parse_var(std::istream &in) {
     std::string name = "";
     while (isalpha(in.peek())) name += static_cast<char>(in.get());
-    return new VarExpr(name);
+    return NEW(VarExpr)(name);
 }
 
-Expr* parse_let(std::istream &in) {
+PTR(Expr) parse_let(std::istream &in) {
     consume_whitespace(in);
 
     std::string lhs = "";
@@ -193,35 +193,35 @@ Expr* parse_let(std::istream &in) {
     consume_whitespace(in);
     consume(in, '=');
 
-    Expr* rhs = parse_expr(in);
+    PTR(Expr) rhs = parse_expr(in);
 
     consume_whitespace(in);
     consume_keyword(in, "_in");
 
-    Expr* body = parse_expr(in);
-    return new LetExpr(lhs, rhs, body);
+    PTR(Expr) body = parse_expr(in);
+    return NEW(LetExpr)(lhs, rhs, body);
 }
 
-Expr* parse_if(std::istream &in) {
+PTR(Expr) parse_if(std::istream &in) {
     consume_whitespace(in);
-    Expr* test_part = parse_expr(in);
+    PTR(Expr) test_part = parse_expr(in);
 
     consume_whitespace(in);
     consume_keyword(in, "_then");
 
     consume_whitespace(in);
-    Expr* then_part = parse_expr(in);
+    PTR(Expr) then_part = parse_expr(in);
 
     consume_whitespace(in);
     consume_keyword(in, "_else");
 
     consume_whitespace(in);
-    Expr* else_part = parse_expr(in);
+    PTR(Expr) else_part = parse_expr(in);
 
-    return new IfExpr(test_part, then_part, else_part);
+    return NEW(IfExpr)(test_part, then_part, else_part);
 }
 
-Expr* parse_fun(std::istream &in) {
+PTR(Expr) parse_fun(std::istream &in) {
     consume_whitespace(in);
     consume(in, '(');
 
@@ -232,6 +232,6 @@ Expr* parse_fun(std::istream &in) {
     consume(in, ')');
     consume_whitespace(in);
 
-    Expr* body = parse_expr(in);
-    return new FunExpr(formal_arg, body);
+    PTR(Expr) body = parse_expr(in);
+    return NEW(FunExpr)(formal_arg, body);
 }
