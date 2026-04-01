@@ -40,7 +40,12 @@ static std::string random_num(std::mt19937 &rng) {
     return std::to_string(num_dist(rng));
 }
 
-static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::string> env, int &name_id) {
+static std::string random_expr(std::mt19937 &rng,
+                               int depth,
+                               std::vector<std::string> env,
+                               int &name_id,
+                               bool allow_functions = true,
+                               bool allow_calls = true) {
     if (depth <= 0) {
         if (!env.empty()) {
             std::uniform_int_distribution<int> leaf_choice(0, 2);
@@ -52,7 +57,7 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         return random_num(rng);
     }
 
-    int max_kind = env.empty() ? 7 : 8;
+    int max_kind = allow_functions ? (env.empty() ? 7 : 8) : (env.empty() ? 5 : 6);
     std::uniform_int_distribution<int> kind_dist(0, max_kind);
     int kind = kind_dist(rng);
 
@@ -64,16 +69,16 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
         return env[var_choice(rng)];
     }
     if (kind == 2) {
-        std::string lhs = random_expr(rng, depth - 1, env, name_id);
-        std::string rhs = random_expr(rng, depth - 1, env, name_id);
+        std::string lhs = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
+        std::string rhs = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
         std::uniform_int_distribution<int> op_dist(0, 1);
         char op = op_dist(rng) == 0 ? '+' : '*';
         return "(" + lhs + " " + op + " " + rhs + ")";
     }
 
     if (kind == 3) {
-        std::string lhs = random_expr(rng, depth - 1, env, name_id);
-        std::string rhs = random_expr(rng, depth - 1, env, name_id);
+        std::string lhs = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
+        std::string rhs = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
         return "(" + lhs + " == " + rhs + ")";
     }
 
@@ -82,32 +87,36 @@ static std::string random_expr(std::mt19937 &rng, int depth, std::vector<std::st
     }
 
     if (kind == 5) {
-        std::string test = random_expr(rng, depth - 1, env, name_id);
-        std::string then_part = random_expr(rng, depth - 1, env, name_id);
-        std::string else_part = random_expr(rng, depth - 1, env, name_id);
+        std::string test = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
+        std::string then_part = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
+        std::string else_part = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
         return "(_if " + test + " _then " + then_part + " _else " + else_part + ")";
     }
 
-    if (kind == 6) {
-        std::string arg = random_var(rng, name_id++);
-        env.push_back(arg);
-        std::string body = random_expr(rng, depth - 1, env, name_id);
-        return "(_fun (" + arg + ") " + body + ")";
-    }
-
-    if (kind == 7) {
+    if (kind == 6 && allow_functions) {
         std::string arg = random_var(rng, name_id++);
         std::vector<std::string> body_env = env;
         body_env.push_back(arg);
-        std::string callee = "(_fun (" + arg + ") " + random_expr(rng, depth - 1, body_env, name_id) + ")";
-        std::string actual = random_expr(rng, depth - 1, env, name_id);
+        // Keep function bodies first-order and call-free to avoid self-application
+        // shapes that often diverge under random testing.
+        std::string body = random_expr(rng, depth - 1, body_env, name_id, false, false);
+        return "(_fun (" + arg + ") " + body + ")";
+    }
+
+    if (kind == 7 && allow_functions) {
+        std::string arg = random_var(rng, name_id++);
+        std::vector<std::string> body_env = env;
+        body_env.push_back(arg);
+        std::string callee =
+            "(_fun (" + arg + ") " + random_expr(rng, depth - 1, body_env, name_id, false, false) + ")";
+        std::string actual = random_expr(rng, depth - 1, env, name_id, false, false);
         return callee + "(" + actual + ")";
     }
 
     std::string var = random_var(rng, name_id++);
-    std::string rhs = random_expr(rng, depth - 1, env, name_id);
+    std::string rhs = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
     env.push_back(var);
-    std::string body = random_expr(rng, depth - 1, env, name_id);
+    std::string body = random_expr(rng, depth - 1, env, name_id, allow_functions, allow_calls);
     return "(_let " + var + " = " + rhs + " _in " + body + ")";
 }
 

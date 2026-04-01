@@ -1,5 +1,6 @@
 #include "val.h"
 
+#include "env.h"
 #include "expr.h"
 #include <cstdint>
 #include <limits>
@@ -83,15 +84,18 @@ std::string BoolVal::to_string() {
     return this->val ? "_true" : "_false";
 }
 
-FunVal::FunVal(std::string formal_arg, PTR(Expr) body) {
+FunVal::FunVal(std::string formal_arg, PTR(Expr) body, PTR(Env) env) {
     this->formal_arg = formal_arg;
     this->body = body;
+    this->env = env;
 }
 
 bool FunVal::equals(PTR(Val) other) {
     PTR(FunVal) f = CAST(FunVal)(other);
     if (f == nullptr) return false;
-    return this->formal_arg == f->formal_arg && this->body->equals(f->body);
+    return this->formal_arg == f->formal_arg
+        && this->body->equals(f->body)
+        && this->env == f->env;
 }
 
 PTR(Val) FunVal::add_to(PTR(Val)) {
@@ -107,8 +111,8 @@ bool FunVal::is_true() {
 }
 
 PTR(Val) FunVal::call(PTR(Val) actual_arg) {
-    PTR(Expr) body_after_subst = this->body->subst(this->formal_arg, actual_arg->to_expr());
-    return body_after_subst->interp();
+    PTR(Env) call_env = NEW(ExtendedEnv)(this->formal_arg, actual_arg, this->env);
+    return this->body->interp(call_env);
 }
 
 PTR(Expr) FunVal::to_expr() {

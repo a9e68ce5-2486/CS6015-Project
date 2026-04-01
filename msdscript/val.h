@@ -5,6 +5,7 @@
 #include <string>
 
 class Expr;
+class Env;
 
 CLASS(Val) {
 public:
@@ -50,8 +51,9 @@ class FunVal : public Val {
 public:
     std::string formal_arg;
     PTR(Expr) body;
+    PTR(Env) env;
 
-    FunVal(std::string formal_arg, PTR(Expr) body);
+    FunVal(std::string formal_arg, PTR(Expr) body, PTR(Env) env);
     bool equals(PTR(Val) other) override;
     PTR(Val) add_to(PTR(Val) other) override;
     PTR(Val) mult_with(PTR(Val) other) override;

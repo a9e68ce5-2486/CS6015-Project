@@ -24,6 +24,7 @@
  */
 
 #include "cmdline.h"
+#include "env.h"
 #include "expr.h"
 #include "parse.h"
 #include "val.h"
@@ -45,7 +46,7 @@ int main(int argc, char **argv) {
         PTR(Expr) e = parse(std::cin);
 
         if (mode == do_interp) {
-            std::cout << e->interp()->to_string() << std::endl;
+            std::cout << e->interp(Env::empty)->to_string() << std::endl;
         }
         else if (mode == do_print) {
             e->printExp(std::cout);

@@ -1,9 +1,12 @@
 #include "catch.h"
+#include "env.h"
 #include "expr.h"
 #include "parse.h"
 #include "val.h"
 #include <limits>
 #include <stdexcept>
+
+static PTR(Env) empty = Env::empty;
 
 TEST_CASE("Expr Equals") {
     CHECK((NEW(NumExpr)(1))->equals(NEW(NumExpr)(1)) == true);
@@ -50,42 +53,48 @@ TEST_CASE("Value Basics") {
     CHECK((NEW(BoolVal)(true))->to_string() == "_true");
     CHECK((NEW(BoolVal)(false))->to_string() == "_false");
 
-    CHECK((NEW(FunVal)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(1))))
+    CHECK((NEW(FunVal)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(1)), empty))
           ->call(NEW(NumVal)(5))->equals(NEW(NumVal)(6)));
 }
 
 TEST_CASE("Expr Interp") {
-    CHECK((NEW(NumExpr)(10))->interp()->equals(NEW(NumVal)(10)));
-    CHECK((NEW(AddExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp()->equals(NEW(NumVal)(5)));
-    CHECK((NEW(MultExpr)(NEW(AddExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3)), NEW(NumExpr)(4)))->interp()->equals(NEW(NumVal)(20)));
-    CHECK_THROWS_WITH((NEW(VarExpr)("x"))->interp(), "no value for variable");
+    CHECK((NEW(NumExpr)(10))->interp(empty)->equals(NEW(NumVal)(10)));
+    CHECK((NEW(AddExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp(empty)->equals(NEW(NumVal)(5)));
+    CHECK((NEW(MultExpr)(NEW(AddExpr)(NEW(NumExpr)(2), NEW(NumExpr)(3)), NEW(NumExpr)(4)))->interp(empty)->equals(NEW(NumVal)(20)));
+    CHECK_THROWS_WITH((NEW(VarExpr)("x"))->interp(empty), "no value for variable");
 
-    CHECK((NEW(BoolExpr)(true))->interp()->equals(NEW(BoolVal)(true)));
-    CHECK((NEW(BoolExpr)(false))->interp()->equals(NEW(BoolVal)(false)));
+    CHECK((NEW(BoolExpr)(true))->interp(empty)->equals(NEW(BoolVal)(true)));
+    CHECK((NEW(BoolExpr)(false))->interp(empty)->equals(NEW(BoolVal)(false)));
 
-    CHECK((NEW(EqExpr)(NEW(NumExpr)(1), NEW(NumExpr)(1)))->interp()->equals(NEW(BoolVal)(true)));
-    CHECK((NEW(EqExpr)(NEW(NumExpr)(1), NEW(NumExpr)(2)))->interp()->equals(NEW(BoolVal)(false)));
-    CHECK((NEW(EqExpr)(NEW(BoolExpr)(true), NEW(NumExpr)(1)))->interp()->equals(NEW(BoolVal)(false)));
+    CHECK((NEW(EqExpr)(NEW(NumExpr)(1), NEW(NumExpr)(1)))->interp(empty)->equals(NEW(BoolVal)(true)));
+    CHECK((NEW(EqExpr)(NEW(NumExpr)(1), NEW(NumExpr)(2)))->interp(empty)->equals(NEW(BoolVal)(false)));
+    CHECK((NEW(EqExpr)(NEW(BoolExpr)(true), NEW(NumExpr)(1)))->interp(empty)->equals(NEW(BoolVal)(false)));
 
-    CHECK((NEW(IfExpr)(NEW(BoolExpr)(true), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp()->equals(NEW(NumVal)(2)));
-    CHECK((NEW(IfExpr)(NEW(BoolExpr)(false), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp()->equals(NEW(NumVal)(3)));
-    CHECK_THROWS_WITH((NEW(IfExpr)(NEW(AddExpr)(NEW(NumExpr)(4), NEW(NumExpr)(1)), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp(),
+    CHECK((NEW(IfExpr)(NEW(BoolExpr)(true), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp(empty)->equals(NEW(NumVal)(2)));
+    CHECK((NEW(IfExpr)(NEW(BoolExpr)(false), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp(empty)->equals(NEW(NumVal)(3)));
+    CHECK_THROWS_WITH((NEW(IfExpr)(NEW(AddExpr)(NEW(NumExpr)(4), NEW(NumExpr)(1)), NEW(NumExpr)(2), NEW(NumExpr)(3)))->interp(empty),
                       "Condition is not a boolean");
 
     CHECK((NEW(IfExpr)(NEW(EqExpr)(NEW(NumExpr)(1), NEW(NumExpr)(2)),
                       NEW(AddExpr)(NEW(BoolExpr)(false), NEW(NumExpr)(5)),
-                      NEW(NumExpr)(88)))->interp()->equals(NEW(NumVal)(88)));
+                      NEW(NumExpr)(88)))->interp(empty)->equals(NEW(NumVal)(88)));
 
     CHECK((NEW(CallExpr)(NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(1))), NEW(NumExpr)(5)))
-          ->interp()->equals(NEW(NumVal)(6)));
+          ->interp(empty)->equals(NEW(NumVal)(6)));
     CHECK((NEW(LetExpr)("x", NEW(NumExpr)(100),
                        NEW(CallExpr)(NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(1))), NEW(NumExpr)(5))))
-          ->interp()->equals(NEW(NumVal)(6)));
+          ->interp(empty)->equals(NEW(NumVal)(6)));
 
-    CHECK_THROWS_WITH((NEW(CallExpr)(NEW(NumExpr)(1), NEW(NumExpr)(2)))->interp(), "Calling a non-function");
+    CHECK((NEW(LetExpr)("x", NEW(NumExpr)(5),
+                       NEW(LetExpr)("f", NEW(FunExpr)("y", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y"))),
+                                   NEW(LetExpr)("x", NEW(NumExpr)(100),
+                                               NEW(CallExpr)(NEW(VarExpr)("f"), NEW(NumExpr)(3))))))
+          ->interp(empty)->equals(NEW(NumVal)(8)));
+
+    CHECK_THROWS_WITH((NEW(CallExpr)(NEW(NumExpr)(1), NEW(NumExpr)(2)))->interp(empty), "Calling a non-function");
 
     CHECK(parse_str("_let factrl = _fun (factrl) _fun (x) _if x == 1 _then 1 _else x * factrl(factrl)(x + -1) _in factrl(factrl)(10)")
-          ->interp()->equals(NEW(NumVal)(3628800)));
+          ->interp(empty)->equals(NEW(NumVal)(3628800)));
 }
 
 TEST_CASE("Expr ToString and Pretty") {
@@ -114,21 +123,12 @@ TEST_CASE("Expr ToString and Pretty") {
           ->to_pretty_string() == "f(1 + 2)");
 }
 
-TEST_CASE("Expr Substitute") {
-    CHECK((NEW(NumExpr)(7))->subst("x", NEW(NumExpr)(9))->equals(NEW(NumExpr)(7)));
-    CHECK((NEW(VarExpr)("x"))->subst("x", NEW(NumExpr)(9))->equals(NEW(NumExpr)(9)));
-    CHECK((NEW(VarExpr)("y"))->subst("x", NEW(NumExpr)(9))->equals(NEW(VarExpr)("y")));
-
-    CHECK((NEW(EqExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(1)))->subst("x", NEW(NumExpr)(9))
-          ->equals(NEW(EqExpr)(NEW(NumExpr)(9), NEW(NumExpr)(1))));
-
-    CHECK((NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y"))))->subst("x", NEW(NumExpr)(9))
-          ->equals(NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y")))));
-    CHECK((NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(VarExpr)("y"))))->subst("y", NEW(NumExpr)(9))
-          ->equals(NEW(FunExpr)("x", NEW(AddExpr)(NEW(VarExpr)("x"), NEW(NumExpr)(9)))));
-
-    CHECK((NEW(CallExpr)(NEW(VarExpr)("f"), NEW(VarExpr)("x")))->subst("x", NEW(NumExpr)(10))
-          ->equals(NEW(CallExpr)(NEW(VarExpr)("f"), NEW(NumExpr)(10))));
+TEST_CASE("Env") {
+    CHECK(Env::empty == empty);
+    CHECK((NEW(ExtendedEnv)("x", NEW(NumVal)(7), empty))->lookup("x")->equals(NEW(NumVal)(7)));
+    CHECK((NEW(ExtendedEnv)("x", NEW(NumVal)(7), NEW(ExtendedEnv)("y", NEW(NumVal)(9), empty)))
+          ->lookup("y")->equals(NEW(NumVal)(9)));
+    CHECK_THROWS_WITH(empty->lookup("z"), "no value for variable");
 }
 
 TEST_CASE("parse") {
