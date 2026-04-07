@@ -29,7 +29,21 @@
 #include "parse.h"
 #include "val.h"
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
+#include <unistd.h>
+
+static std::string read_program_from_stdin() {
+    if (isatty(STDIN_FILENO)) {
+        std::string line;
+        std::getline(std::cin, line);
+        return line;
+    }
+
+    std::stringstream buffer;
+    buffer << std::cin.rdbuf();
+    return buffer.str();
+}
 
 /**
  * \brief Main entry point.
@@ -43,7 +57,8 @@ int main(int argc, char **argv) {
             return 0;
         }
 
-        PTR(Expr) e = parse(std::cin);
+        std::string input = read_program_from_stdin();
+        PTR(Expr) e = parse_str(input);
 
         if (mode == do_interp) {
             std::cout << e->interp(Env::empty)->to_string() << std::endl;
